@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=0"/><html>
+<meta name="apple-mobile-web-app-capable" content="yes">
+	
+<head>
+	<title>Football Prototype</title>
+	<style type="text/css">
+		html,body {
+			background-color: #000;
+			color: #fff;
+			font-family: helvetica, arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			font-size: 12pt;
+		}
+	</style>
+</head>
+<body>
+	<!--
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+  -->
+
+	<script type="text/javascript" src="src/FootballNamespace.js"></script>
+
+  <!-- Javascript Object Engine components -->
+	<script type="text/javascript" src="src/joe/Utility.js"></script>
+	<script type="text/javascript" src="src/joe/ClassEx.js"></script>
+	<script type="text/javascript" src="src/joe/Listeners.js"></script>
+	<script type="text/javascript" src="src/joe/Graphics.js"></script>
+	<script type="text/javascript" src="src/joe/UpdateLoop.js"></script>
+
+	<script type="text/javascript" src="src/joe/IO/KeyInput.js"></script>
+	<script type="text/javascript" src="src/joe/IO/MouseInput.js"></script>
+	<script type="text/javascript" src="src/joe/IO/TouchToMouse.js"></script>
+
+	<script type="text/javascript" src="src/joe/GameState.js"></script>
+	
+	<script type="text/javascript" src="src/joe/Math/MathEx.js"></script>
+	<script type="text/javascript" src="src/joe/Math/AABBmodule.js"></script>
+
+	<script type="text/javascript" src="src/joe/Resources/Resources.js"></script>
+	<script type="text/javascript" src="src/joe/Resources/FontEx.js"></script>
+	<script type="text/javascript" src="src/joe/Resources/Sound.js"></script>
+
+	<script type="text/javascript" src="src/joe/Scene/Camera.js"></script>
+	<script type="text/javascript" src="src/joe/Scene/LayerBitmap.js"></script>
+	<script type="text/javascript" src="src/joe/Scene/View.js"></script>
+
+	<script type="text/javascript" src="src/joe/Sprites/SpriteSheet.js"></script>
+	<script type="text/javascript" src="src/joe/Sprites/Sprite.js"></script>
+
+	<script type="text/javascript" src="src/joe/GUI/GUI.js"></script>
+	<script type="text/javascript" src="src/joe/GUI/WidgetModule.js"></script>
+	<script type="text/javascript" src="src/joe/GUI/CaptureBox.js"></script>
+	<script type="text/javascript" src="src/joe/GUI/ClickBox.js"></script>
+	<script type="text/javascript" src="src/joe/GUI/ToggleBox.js"></script>
+	<script type="text/javascript" src="src/joe/GUI/Label.js"></script>
+	<!--
+	-->
+
+	<!-- Football app code -->
+	<script type="text/javascript" src="src/StateTitle.js"></script>
+	<script type="text/javascript" src="src/StatePlay.js"></script>
+	<script type="text/javascript" src="src/Football.js"></script>
+
+	<canvas id="canvas"></canvas>
+</body>
+</html>
