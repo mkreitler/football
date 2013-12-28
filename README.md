@@ -1,4 +1,5 @@
-PhysWiz
+Football
 =======
 
-Tool for understanding solutions to simple kinematics problems
+Homage to LED football games of the past.
+

@@ -47,15 +47,48 @@ joe.GraphicsClass = new joe.ClassEx(null, [
     bWantsToRender: false,
     newBufferCount: 0,
     screenContext: null,
+    wantWidth: 0,
+    wantHeight: 0,
+    globalScale: 1,
 
-    init: function(left, top, width, height) {
+    init: function(wantWidth, wantHeight) {
+      this.wantWidth = wantWidth;
+      this.wantHeight = wantHeight;
+
+      this.resizeCanvas();
+    },
+
+    resizeCanvas: function() {
       if (document.body) {
-        var pageWidth = joe.Utility.getPageWidth();
-        var pageHeight = joe.Utility.getPageHeight();
+        var pageWidth = joe.Utility.getPageWidth(),
+            pageHeight = joe.Utility.getPageHeight(),
+            bAppendCanvas = !this.gameCanvas,
+            wantAspectRatio = this.wantWidth / Math.max(1, this.wantHeight),
+            aspectRatio = pageWidth / Math.max(1, pageHeight),
+            top = 0,
+            left = 0,
+            width = this.wantWidth,
+            height = this.wantHeight;
 
-        // console.log(pageWidth, pageHeight);
+        if (aspectRatio < wantAspectRatio) {
+          // The actual screen is narrower than the desired display.
+          // In this case, we'll crop the height and scale to the
+          // actual width.
+          this.globalScale = pageWidth / this.wantWidth;
+        }
+        else {
+          // The actual screen is wider (or exactly equal to) the
+          // desired display. In this case we'll crop the width and
+          // scale to the actual height.
+          this.globalScale = pageHeight / this.wantHeight;
+        }
 
-        this.gameCanvas = document.createElement("canvas");
+        if (!this.gameCanvas) {
+          this.gameCanvas = document.createElement("canvas");
+        }
+
+        width *= this.globalScale;
+        height *= this.globalScale;
 
         this.gameCanvas.setAttribute('width', width);
         this.gameCanvas.setAttribute('height', height);
@@ -65,7 +98,9 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         this.gameCanvas.style.left = left + Math.round((pageWidth - width) * 0.5) + "px";
         this.gameCanvas.style.top = top + Math.round((height - pageHeight) * 0.5) + "px";
 
-        document.body.appendChild(this.gameCanvas);
+        if (bAppendCanvas) {
+          document.body.appendChild(this.gameCanvas);
+        }
 
         this.setCanvas(this.gameCanvas);
       }
@@ -166,7 +201,10 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         window.requestAnimFrame()(this.render.bind(this));
       }
 
+      this.activeContext.save();
+      this.activeContext.scale(this.globalScale, this.globalScale);
       this.callListeners("draw", this.activeContext);
+      this.activeContext.restore();
 
       if (this.activeContext !== this.screenContext) {
         this.screenContext.drawImage(this.activeContext, 0, 0);
@@ -186,6 +224,6 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
 // gameWidth and gameHeight, if used, should be set in the first file loaded
 // into the browser.
-joe.Graphics = new joe.GraphicsClass(0, 0, gameWidth || 1024, gameHeight || 768);
+joe.Graphics = new joe.GraphicsClass(gameWidth || 1024, gameHeight || 768);
 
 
