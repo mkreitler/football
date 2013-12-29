@@ -98,14 +98,14 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
         this.gameCanvas.style.position = "absolute";
         this.gameCanvas.style.left = Math.round((pageWidth - width) * 0.5) + "px";
-        this.gameCanvas.style.top = Math.round((height - pageHeight) * 0.5) + "px";
+        this.gameCanvas.style.top = Math.round((pageHeight - height) * 0.5) + "px";
 
-        console.log("page width: " + pageWidth);
-        console.log("page height: " + pageHeight);
-        console.log("canvas width: " + width);
-        console.log("canvas height: " + height);
-        console.log("style left: " + this.gameCanvas.style.left);
-        console.log("style top: " + this.gameCanvas.style.top);
+        // console.log("page width: " + pageWidth);
+        // console.log("page height: " + pageHeight);
+        // console.log("canvas width: " + width);
+        // console.log("canvas height: " + height);
+        // console.log("style left: " + this.gameCanvas.style.left);
+        // console.log("style top: " + this.gameCanvas.style.top);
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
