@@ -108,6 +108,28 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       }
     },
 
+    render: function() {
+      var i,
+          dummyText;  // Dummy text node used to force WebKit browsers to refresh the canvas.
+      
+      if (this.bWantsToRender) {
+        window.requestAnimFrame()(this.render.bind(this));
+      }
+
+      this.callListeners("draw", this.activeContext);
+
+      if (this.activeContext !== this.screenContext) {
+        this.screenContext.save();
+        this.screenContext.scale(this.globalScale, this.globalScale);
+        this.screenContext.drawImage(this.activeContext.canvas, 0, 0);
+        this.screenContext.restore();
+      }
+
+      dummyText = document.createTextNode(' ');
+      document.body.append(dummyText);
+      setTimeout(function(){dummyText.parentNode.removeChild(dummyText)}, 0);      
+    },
+
     setCanvas: function(newCanvas) {
       if (newCanvas) {
         this.gameCanvas = newCanvas;
@@ -202,23 +224,6 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       this.buffers.push(newCanvas);
 
       return newCanvas;   
-    },
-
-    render: function() {
-      var i;
-      
-      if (this.bWantsToRender) {
-        window.requestAnimFrame()(this.render.bind(this));
-      }
-
-      this.callListeners("draw", this.activeContext);
-
-      if (this.activeContext !== this.screenContext) {
-        this.screenContext.save();
-        this.screenContext.scale(this.globalScale, this.globalScale);
-        this.screenContext.drawImage(this.activeContext.canvas, 0, 0);
-        this.screenContext.restore();
-      }
     },
 
     start: function() {
