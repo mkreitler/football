@@ -14,6 +14,24 @@ fb.StatePlayClass = new joe.ClassEx({
   commandTimers: {left:0, right:0},
   lastUp: 0, // Corresponds to CMD_TYPE.NONE
 
+  touchDown: function(id, x, y) {
+    if (x < joe.Graphics.getWidth() / 2) {
+      this.keyPress(joe.KeyInput.KEYS.LEFT);
+    }
+    else {
+      this.keyPress(joe.KeyInput.KEYS.RIGHT);
+    }
+  },
+
+  touchUp: function(id, x, y) {
+    if (x < joe.Graphics.getWidth() / 2) {
+      this.keyRelease(joe.KeyInput.KEYS.LEFT);
+    }
+    else {
+      this.keyRelease(joe.KeyInput.KEYS.RIGHT);
+    }
+  },
+
   keyPress: function(keyCode) {
     if (keyCode === joe.KeyInput.KEYS.LEFT) {
       this.ioStates.left = fb.StatePlayClass.IO_STATE.DOWN;

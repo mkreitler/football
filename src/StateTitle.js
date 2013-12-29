@@ -29,6 +29,10 @@ fb.StateTitleClass = new joe.ClassEx({
 
   mouseUp: function(x, y) {
     fb.game.startPlayState();
+  },
+
+  touchDown: function(id, x, y) {
+    fb.game.startPlayState();
   }
 });
 
