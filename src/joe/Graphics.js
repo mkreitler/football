@@ -99,6 +99,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         this.gameCanvas.style.position = "absolute";
         this.gameCanvas.style.left = Math.round((pageWidth - width) * 0.5) + "px";
         this.gameCanvas.style.top = Math.round((pageHeight - height) * 0.5) + "px";
+        this.gameCanvas.style.zIndex = 1;
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
