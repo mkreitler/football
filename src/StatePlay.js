@@ -15,7 +15,7 @@ fb.StatePlayClass = new joe.ClassEx({
   lastUp: 0, // Corresponds to CMD_TYPE.NONE
 
   touchDown: function(id, x, y) {
-    if (x < joe.Graphics.getWidth() / 2) {
+    if (x < joe.Graphics.getScreenWidth() / 2) {
       // console.log(">>> touchDownLeft");
       this.keyPress(joe.KeyInput.KEYS.LEFT);
     }
@@ -26,7 +26,7 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   touchUp: function(id, x, y) {
-    if (x < joe.Graphics.getWidth() / 2) {
+    if (x < joe.Graphics.getScreenWidth() / 2) {
       // console.log(">>> touchUpLeft");
       this.keyRelease(joe.KeyInput.KEYS.LEFT);
     }

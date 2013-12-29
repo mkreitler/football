@@ -121,6 +121,14 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       return this.gameCanvas;
     },
 
+    getScreenWidth: function() {
+      return this.gameCanvas ? this.gameCanvas.width : 0;
+    },
+
+    getScreenHeight: function() {
+      return this.gameCanvas ? this.gameCanvas.height : 0;
+    },
+
     getWidth: function() {
       return this.wantWidth;
     },
