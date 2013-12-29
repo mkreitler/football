@@ -2,10 +2,10 @@
 
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.phonegap.hello-world"
+        id        = "com.freegamersjournal.football"
         version   = "1.0.0">
 
-    <name>Hello World</name>
+    <name>Football</name>
 
     <description>
         Hello World sample application that responds to the deviceready event.
