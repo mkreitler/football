@@ -103,6 +103,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
+          document.body.style.zIndex = 1;
         }
 
         this.setCanvas(this.gameCanvas);
@@ -126,7 +127,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       }
 
       // Force webkit browsers to refresh the page.
-      document.body.removeChild(document.body.appendChild(document.createElement('style')));      
+      // document.body.removeChild(document.body.appendChild(document.createElement('style')));      
+      document.body.style.webkitTransforms = 'scale(1)';
     },
 
     setCanvas: function(newCanvas) {
