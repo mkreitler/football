@@ -109,8 +109,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
     },
 
     render: function() {
-      var i,
-          dummyText;  // Dummy text node used to force WebKit browsers to refresh the canvas.
+      var i;  // Dummy text node used to force WebKit browsers to refresh the canvas.
       
       if (this.bWantsToRender) {
         window.requestAnimFrame()(this.render.bind(this));
@@ -125,9 +124,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         this.screenContext.restore();
       }
 
-      dummyText = document.createTextNode(' ');
-      document.body.appendChild(dummyText);
-      setTimeout(function(){dummyText.parentNode.removeChild(dummyText)}, 0);      
+      // Force webkit browsers to refresh the page.
+      document.body.removeChild(document.body.appendChild(document.createElement('style')));      
     },
 
     setCanvas: function(newCanvas) {
