@@ -55,7 +55,11 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       this.wantWidth = wantWidth;
       this.wantHeight = wantHeight;
 
+      // Create the game canvas (what we actually see).
       this.resizeCanvas();
+
+      // Create the back buffer (what we render the game into).
+      this.createOffscreenBuffer(wantWidth, wantHeight, true);
     },
 
     resizeCanvas: function() {
@@ -65,8 +69,6 @@ joe.GraphicsClass = new joe.ClassEx(null, [
             bAppendCanvas = !this.gameCanvas,
             wantAspectRatio = this.wantWidth / Math.max(1, this.wantHeight),
             aspectRatio = pageWidth / Math.max(1, pageHeight),
-            top = 0,
-            left = 0,
             width = this.wantWidth,
             height = this.wantHeight;
 
@@ -87,16 +89,19 @@ joe.GraphicsClass = new joe.ClassEx(null, [
           this.gameCanvas = document.createElement("canvas");
         }
 
-        width *= this.globalScale;
-        height *= this.globalScale;
+        width = Math.round(width * this.globalScale);
+        height = Math.round(height * this.globalScale);
 
         this.gameCanvas.setAttribute('width', width);
         this.gameCanvas.setAttribute('height', height);
         this.gameCanvas.setAttribute('id', 'gameCanvas');
 
         this.gameCanvas.style.position = "absolute";
-        this.gameCanvas.style.left = left + Math.round((pageWidth - width) * 0.5) + "px";
-        this.gameCanvas.style.top = top + Math.round((height - pageHeight) * 0.5) + "px";
+        this.gameCanvas.style.left = Math.round((pageWidth - width) * 0.5) + "px";
+        this.gameCanvas.style.top = Math.round((height - pageHeight) * 0.5) + "px";
+
+        console.log(this.gameCanvas.style.left);
+        console.log(this.gameCanvas.style.top);
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
@@ -120,11 +125,11 @@ joe.GraphicsClass = new joe.ClassEx(null, [
     },
 
     getWidth: function() {
-      return this.gameCanvas.width;
+      return this.wantWidth;
     },
 
     getHeight: function() {
-      return this.gameCanvas.height;
+      return this.wantHeight;
     },
 
     createOffscreenBuffer: function(width, height, setAsActive) {
@@ -151,8 +156,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
     clear: function(buffer, width, height) {
       var targetBuffer = buffer || this.activeContext;
-      var clearWidth = width || this.gameCanvas.width;
-      var clearHeight = height || this.gameCanvas.height;
+      var clearWidth = width || this.getWidth();
+      var clearHeight = height || this.getHeight();
       
       targetBuffer.clearRect(0, 0, clearWidth, clearHeight);
     },
@@ -175,8 +180,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
     clearToColor: function(color, buffer, width, height) {
       var targetBuffer = buffer || this.activeContext;
-      var clearWidth = width || this.gameCanvas.width;
-      var clearHeight = height || this.gameCanvas.height;
+      var clearWidth = width || this.getWidth();
+      var clearHeight = height || this.getHeight();
       
       targetBuffer.fillStyle = color;
       targetBuffer.fillRect(0, 0, clearWidth, clearHeight);
@@ -201,13 +206,13 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         window.requestAnimFrame()(this.render.bind(this));
       }
 
-      this.activeContext.save();
-      this.activeContext.scale(this.globalScale, this.globalScale);
       this.callListeners("draw", this.activeContext);
-      this.activeContext.restore();
 
       if (this.activeContext !== this.screenContext) {
-        this.screenContext.drawImage(this.activeContext, 0, 0);
+        this.screenContext.save();
+        this.screenContext.scale(this.globalScale, this.globalScale);
+        this.screenContext.drawImage(this.activeContext.canvas, 0, 0);
+        this.screenContext.restore();
       }
     },
 
