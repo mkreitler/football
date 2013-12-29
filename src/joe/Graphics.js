@@ -102,8 +102,10 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
         console.log("page width: " + pageWidth);
         console.log("page height: " + pageHeight);
+        console.log("canvas width: " + width);
+        console.log("canvas height: " + height);
         console.log("style left: " + this.gameCanvas.style.left);
-        console.log("style right: " + this.gameCanvas.style.top);
+        console.log("style top: " + this.gameCanvas.style.top);
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
