@@ -33,6 +33,8 @@ joe.Multitouch = new joe.ClassEx([
     touchMove: function(e) {
       if (e) {
         // TODO: do something here?
+        e.preventDefault();
+        e.stopPropagation();        
       }
     },
     
