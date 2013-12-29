@@ -31,7 +31,47 @@ fb.GameClass = new joe.ClassEx({
 
   startTitleState: function() {
     joe.GameStateClass.setState(this.titleState);
-  }
+  },
+
+  touchUp: function(touchID, x, y) {
+    var curState = joe.GameState.getState();
+
+    if (curState && curState.touchUp) {
+      curState.touchUp(touchID, x, y);
+    }
+
+    return true;
+  },
+
+  touchDown: function(touchID, x, y) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.touchDown) {
+      curState.touchDown(touchID, x, y);
+    }
+
+    return true;
+  },
+
+  keyPress: function(keyCode) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.keyPress) {
+      curState.keyPress(keyCode);
+    }
+
+    return true;
+  },
+
+  keyRelease: function(keyCode) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.keyRelease) {
+      curState.keyRelease(keyCode);
+    }
+
+    return true;
+  },
 });
 
 fb.onResourceLoaded = function(resource) {
@@ -45,5 +85,9 @@ fb.onResourceLoadFailed = function(resourceURL) {
 };
 
 fb.game = new fb.GameClass();
+
+// Accept input.
+joe.KeyInput.addListener(fb.game);
+joe.Multitouch.addListener(fb.game);
 
 

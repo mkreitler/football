@@ -17,6 +17,14 @@ joe.SpriteSheet = new joe.ClassEx({
     this.spriteHeight = this.srcImage.height / this.rows;
   },
 
+  getCellWidth: function() {
+    return this.spriteWidth;
+  },
+
+  getCellHeight: function() {
+    return this.spriteHeight;
+  },
+
   draw: function(gfx, x, y, row, col) {
     joe.assert(row >= 0 && row < this.rows);
     joe.assert(col >= 0 && col < this.cols);

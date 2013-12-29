@@ -5,6 +5,13 @@ joe.MathEx.EPSILON_ANGLE = 0.0001;
 joe.MathEx.resultRect = {x:0, y:0, w:0, h:0};
 
 // Rectangles ----------------------------------------------------------------
+joe.MathEx.rect2 = function(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+};
+
 joe.MathEx.clip = function(r1, r2) {
   var rt = null,
       result = joe.MathEx.resultRect;
