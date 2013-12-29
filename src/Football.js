@@ -34,7 +34,7 @@ fb.GameClass = new joe.ClassEx({
   },
 
   touchUp: function(touchID, x, y) {
-    var curState = joe.GameState.getState();
+    var curState = joe.GameStateClass.getState();
 
     if (curState && curState.touchUp) {
       curState.touchUp(touchID, x, y);
