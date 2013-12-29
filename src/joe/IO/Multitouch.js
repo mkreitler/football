@@ -20,9 +20,9 @@ joe.Multitouch = new joe.ClassEx([
         e.stopPropagation();
         
         for (i=0; i<e.touches.length; ++i) {
-          joe.MouseInput.getClientPos(e.touches[i]);
+          joe.Multitouch.getClientPos(e.touches[i]);
           console.log("touchDown " + e.touches[i].identifier + " " + joe.Multitouch.pointInfo.clientX + " " + joe.Multitouch.pointInfo.clientY);
-          joe.MouseInput.callListenersUntilConsumed("touchDown",
+          joe.Multitouch.callListenersUntilConsumed("touchDown",
                                                     e.touches[i].identifier,
                                                     joe.Multitouch.pointInfo.clientX,
                                                     joe.Multitouch.pointInfo.clientY);    
@@ -68,9 +68,9 @@ joe.Multitouch = new joe.ClassEx([
         e.stopPropagation();
         
         for (i=0; i<e.touches.length; ++i) {
-          joe.MouseInput.getClientPos(e.touches[i]);
+          joe.Multitouch.getClientPos(e.touches[i]);
           console.log("touchUp " + e.touches[i].identifier + " " + joe.Multitouch.pointInfo.clientX + " " + joe.Multitouch.pointInfo.clientY);
-          joe.MouseInput.callListenersUntilConsumed("touchUp",
+          joe.Multitouch.callListenersUntilConsumed("touchUp",
                                                     e.touches[i].identifier,
                                                     joe.Multitouch.pointInfo.clientX,
                                                     joe.Multitouch.pointInfo.clientY);    
