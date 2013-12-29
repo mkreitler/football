@@ -36,10 +36,7 @@ fb.GameClass = new joe.ClassEx({
   touchUp: function(touchID, x, y) {
     var curState = joe.GameState.getState();
 
-    console.log(">>> Football: touchUp");
-
     if (curState && curState.touchUp) {
-      console.log("  >>> Football: touchUp");
       curState.touchUp(touchID, x, y);
     }
 
@@ -49,10 +46,7 @@ fb.GameClass = new joe.ClassEx({
   touchDown: function(touchID, x, y) {
     var curState = joe.GameStateClass.getState();
 
-    console.log(">>> Football: touchDown");
-
     if (curState && curState.touchDown) {
-      console.log("  >>> Football: touchDown");
       curState.touchDown(touchID, x, y);
     }
 

@@ -16,18 +16,22 @@ fb.StatePlayClass = new joe.ClassEx({
 
   touchDown: function(id, x, y) {
     if (x < joe.Graphics.getWidth() / 2) {
+      console.log(">>> touchDownLeft");
       this.keyPress(joe.KeyInput.KEYS.LEFT);
     }
     else {
+      console.log(">>> touchDownRight");
       this.keyPress(joe.KeyInput.KEYS.RIGHT);
     }
   },
 
   touchUp: function(id, x, y) {
     if (x < joe.Graphics.getWidth() / 2) {
+      console.log(">>> touchUpLeft");
       this.keyRelease(joe.KeyInput.KEYS.LEFT);
     }
     else {
+      console.log(">>> touchUpRight");
       this.keyRelease(joe.KeyInput.KEYS.RIGHT);
     }
   },
