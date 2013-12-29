@@ -128,7 +128,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
       // Force webkit browsers to refresh the page.
       // document.body.removeChild(document.body.appendChild(document.createElement('style')));      
-      document.body.style.webkitTransforms = 'scale(1)';
+      document.body.style.webkitTransform = 'scale(1)';
+      this.gameCanvas.style.webkitTransform = 'scale(1)';
     },
 
     setCanvas: function(newCanvas) {
