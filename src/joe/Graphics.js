@@ -126,7 +126,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
       }
 
       dummyText = document.createTextNode(' ');
-      document.body.append(dummyText);
+      document.body.appendChild(dummyText);
       setTimeout(function(){dummyText.parentNode.removeChild(dummyText)}, 0);      
     },
 
