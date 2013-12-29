@@ -1,0 +1,4 @@
+<preference name="orienation" value="portrait" />
+<preference name="fullscreen" value="true" />
+
+<preference name="android-hardwareAccelerated" value="false" />
