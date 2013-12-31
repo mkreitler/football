@@ -93,13 +93,13 @@ fb.StatePlayClass = new joe.ClassEx({
     if (this.font) {
       if (this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP &&
           this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Both!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, "#00FF00", 72, 0.5);
+        this.font.draw(gfx, "Both!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
       }
       else if (this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Left!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, "#00FF00", 72, 0.5);
+        this.font.draw(gfx, "Left!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
       }
       else if (this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Right!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, "#00FF00", 72, 0.5);
+        this.font.draw(gfx, "Right!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
       }
     }
 

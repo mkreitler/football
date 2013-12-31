@@ -50,6 +50,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
     wantWidth: 0,
     wantHeight: 0,
     globalScale: 1,
+    globalAlpha: 1,
 
     init: function(wantWidth, wantHeight) {
       this.wantWidth = wantWidth;
@@ -60,6 +61,12 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
       // Create the back buffer (what we render the game into).
       this.createOffscreenBuffer(wantWidth, wantHeight, true);
+    },
+
+    setGlobalAlpha: function(newAlpha) {
+      if (this.activeContext) {
+        this.activeContext.globalAlpha = newAlpha;
+      }
     },
 
     resizeCanvas: function() {

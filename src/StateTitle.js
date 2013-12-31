@@ -19,7 +19,7 @@ fb.StateTitleClass = new joe.ClassEx({
     joe.Graphics.clearToColor("#000000");
 
     if (this.font) {
-      this.font.draw(gfx, "Football!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, "#00FF00", 72, 0.5);
+      this.font.draw(gfx, "Football!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
     }
   },
 

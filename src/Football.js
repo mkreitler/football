@@ -10,7 +10,7 @@ fb.GameClass = new joe.ClassEx({
   playState: null,
 
   init: function() {
-    this.sysFont = joe.Resources.loader.loadFont("fonts/collegiateHeavyOutline Medium.ttf", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
+    this.sysFont = joe.Resources.loader.loadBitmapFont("img/font_college_48.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
     this.spriteSheet = joe.Resources.loader.loadImage("img/football.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
     this.field = joe.Resources.loader.loadImage("img/field.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
   },

@@ -82,7 +82,7 @@ joe.ResourceLoader = new joe.ClassEx(null, {
 
   loadBitmapFont: function(fontURL, onLoadedCallback, onErrorCallback, observer) {
     var font = new joe.Resources.BitmapFont(),
-        image = joe.Resources.loadImage(fontURL,
+        image = joe.Resources.loader.loadImage(fontURL,
                   function() {
                     if (onLoadedCallback) { onLoadedCallback.call(observer, image) }
                     font.onLoad(image);
