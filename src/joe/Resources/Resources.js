@@ -79,6 +79,19 @@ joe.ResourceLoader = new joe.ClassEx(null, {
   
     return image;
   },
+
+  loadBitmapFont: function(fontURL, onLoadedCallback, onErrorCallback, observer) {
+    var font = new joe.Resources.BitmapFont(),
+        image = joe.Resources.loadImage(fontURL,
+                  function() {
+                    if (onLoadedCallback) { onLoadedCallback.call(observer, image) }
+                    font.onLoad(image);
+                  },
+                  onErrorCallback,
+                  observer);
+
+    return font;
+  },
   
   loadFont: function(fontURL, onLoadedCallback, onErrorCallback, observer) {
     joe.Resources.incPendingCount();

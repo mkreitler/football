@@ -126,7 +126,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         this.screenContext.restore();
       }
 
-      var bStyle = document.body.style;bStyle.backgroundColor = "#fad";
+      // var bStyle = document.body.style;
+      // bStyle.backgroundColor = "#fad";
 
       // Force webkit browsers to refresh the page.
       // document.body.removeChild(document.body.appendChild(document.createElement('style')));      
