@@ -80,15 +80,30 @@ joe.ResourceLoader = new joe.ClassEx(null, {
     return image;
   },
 
-  loadBitmapFont: function(fontURL, onLoadedCallback, onErrorCallback, observer) {
-    var font = new joe.Resources.BitmapFont(),
-        image = joe.Resources.loader.loadImage(fontURL,
-                  function() {
-                    if (onLoadedCallback) { onLoadedCallback.call(observer, image) }
-                    font.onLoad(image);
-                  },
-                  onErrorCallback,
-                  observer);
+  loadBitmapFont: function(fontURLs, onLoadedCallback, onErrorCallback, observer) {
+    var font = null,
+        image = null,
+        fontURL = null,
+        i = 0;
+
+        if (!(fontURLs instanceof Array)) {
+          fontURL = fontURLs;
+          fontURLs = [];
+          fontURLs.push(fontURL);
+        }
+
+        font = new joe.Resources.BitmapFont();
+
+        for (i=0; i<fontURLs.length; ++i) {
+          image = joe.Resources.loader.loadImage(fontURLs[i],
+                                                 function() {
+                                                              if (onLoadedCallback) { onLoadedCallback.call(observer, image) }
+                                                              font.onLoad(image);
+                                                            },
+                                                 onErrorCallback,
+                                                 observer);
+          font.addImage(image);
+        }
 
     return font;
   },

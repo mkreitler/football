@@ -10,7 +10,13 @@ fb.GameClass = new joe.ClassEx({
   playState: null,
 
   init: function() {
-    this.sysFont = joe.Resources.loader.loadBitmapFont("img/font_college_48.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
+    this.sysFont = joe.Resources.loader.loadBitmapFont(["img/font_college_48_01.png",
+                                                        "img/font_college_48_02.png",
+                                                        "img/font_college_48_03.png"],
+                                                        fb.onResourceLoaded,
+                                                        fb.onResourceLoadFailed,
+                                                        this);
+
     this.spriteSheet = joe.Resources.loader.loadImage("img/football.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
     this.field = joe.Resources.loader.loadImage("img/field.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
   },
@@ -84,10 +90,14 @@ fb.onResourceLoadFailed = function(resourceURL) {
   console.log("Failed to load font resource from " + resourceURL);
 };
 
-fb.game = new fb.GameClass();
+window.onload = function() {
+  console.log("Creating game...");
+  fb.game = new fb.GameClass();
 
-// Accept input.
-joe.KeyInput.addListener(fb.game);
-joe.Multitouch.addListener(fb.game);
+  // Accept input.
+  joe.KeyInput.addListener(fb.game);
+  joe.Multitouch.addListener(fb.game);
+};
+
 
 

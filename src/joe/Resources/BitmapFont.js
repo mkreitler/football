@@ -9,7 +9,7 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 							RIGHT: 1,
 							CENTER: 2
 						},
-		ALPHA_THRESHOLD: 2
+		ALPHA_THRESHOLD: 128
 	},
 	// Instance Definition //////////////////////////////////////////////////////
 	{
@@ -23,14 +23,75 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 		height: 0,
 		width: 0,
 		loaded: false,
+		extImages: [],
+		extBreakpoints: [],
+		nLoaded: 0,
+
+		addImage: function(image) {
+			this.extImages.push(image);
+		},
 
 		onLoad: function(image) {
-			this.data = image;
-			this.height = this.data.height;
-			this.width = this.data.width;
+			this.nLoaded += 1;
 
-			this._loadMetrics( this.data );
-			this.loaded = true;
+			if (this.nLoaded === this.extImages.length) {
+				this._loadMetrics();
+				this.loaded = true;
+			}
+		},
+
+		_loadMetrics: function( ) {
+			// Draw the bottommost line of this font image into an offscreen canvas
+			// and analyze it pixel by pixel.
+			// A run of non-transparent pixels represents a character and its width
+			
+			this.widthMap = [];
+			this.indices = [];
+			this.height = this.extImages[0].height - 1;
+			this.width = this.extImages[0].width;
+			
+			var px = null;
+			var currentImage = 0;
+			var currentChar = 0;
+			var currentWidth = 0;
+			var lastChar = -1;
+			for (var i=0; i<this.extImages.length; ++i) {
+				image = this.extImages[i];
+				this.extBreakpoints.push(currentChar);
+				currentWidth = 0;
+
+				if (image) {
+						canvas = document.createElement('canvas');
+						canvas.width = image.width;
+						canvas.height = image.height;
+						ctx = canvas.getContext('2d');
+						ctx.drawImage( image, 0, 0 );
+						px = this._getImagePixels(image, 0, image.height-1, image.width, 1);
+				}
+				else {
+					break;
+				}
+
+				for( var x = 0; x < image.width; x++ ) {
+					var index = x * 4 + 3; // alpha component of this pixel
+					if( px.data[index] > joe.Resources.BitmapFont.ALPHA_THRESHOLD ) {
+						currentWidth++;
+					}
+					else if( px.data[index] < joe.Resources.BitmapFont.ALPHA_THRESHOLD && currentWidth ) {
+						this.widthMap.push( currentWidth );
+						this.indices.push( x-currentWidth );
+						currentChar++;
+						currentWidth = 0;
+						lastChar = currentChar;
+					}
+				}
+
+				if (lastChar != currentChar) {
+					this.widthMap.push( currentWidth );
+					this.indices.push( x-currentWidth );
+					lastChar = currentChar;
+				}
+			}
 		},
 
 		draw: function( gfx, text, x, y, align ) {
@@ -69,19 +130,19 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 		},
 		
 		widthForString: function( text ) {
-				// Multiline?
-				if( text.indexOf('\n') !== -1 ) {
-					var lines = text.split( '\n' );
-					var width = 0;
-					for( var i = 0; i < lines.length; i++ ) {
-						width = Math.max( width, this._widthForLine(lines[i]) );
-					}
-					return width;
+			// Multiline?
+			if( text.indexOf('\n') !== -1 ) {
+				var lines = text.split( '\n' );
+				var width = 0;
+				for( var i = 0; i < lines.length; i++ ) {
+					width = Math.max( width, this._widthForLine(lines[i]) );
 				}
-				else {
-					return this._widthForLine( text );
-				}
-			},
+				return width;
+			}
+			else {
+				return this._widthForLine( text );
+			}
+		},
 		
 		_widthForLine: function( text ) {
 			var width = 0;
@@ -99,16 +160,23 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 		_drawChar: function( gfx, c, targetX, targetY ) {
 			if( !this.loaded || c < 0 || c >= this.indices.length ) { return 0; }
 			
-			var scale = 1;
+			var curImage = this.extImages[0],
+					scale = 1;
 			
-			
+			// Figure out which image to use.
+			for (var i=0; i<this.extImages.length; ++i) {
+				if (c >= this.extBreakpoints[i]) {
+					curImage = this.extImages[i];
+				}
+			}
+
 			var charX = this.indices[c] * scale;
 			var charY = 0;
 			var charWidth = this.widthMap[c] * scale;
 			var charHeight = (this.height-2) * scale;		
 			
 			gfx.drawImage( 
-				this.data,
+				curImage,
 				charX, charY,
 				charWidth, charHeight,
 				targetX, targetY,
@@ -118,35 +186,6 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 			return this.widthMap[c] + this.letterSpacing;
 		},
 		
-		_loadMetrics: function( image ) {
-			// Draw the bottommost line of this font image into an offscreen canvas
-			// and analyze it pixel by pixel.
-			// A run of non-transparent pixels represents a character and its width
-			
-			this.height = image.height-1;
-			this.widthMap = [];
-			this.indices = [];
-			
-			var px = this._getImagePixels( image, 0, image.height-1, image.width, 1 );
-			
-			var currentChar = 0;
-			var currentWidth = 0;
-			for( var x = 0; x < image.width; x++ ) {
-				var index = x * 4 + 3; // alpha component of this pixel
-				if( px.data[index] > joe.Resources.BitmapFont.ALPHA_THRESHOLD ) {
-					currentWidth++;
-				}
-				else if( px.data[index] < joe.Resources.BitmapFont.ALPHA_THRESHOLD && currentWidth ) {
-					this.widthMap.push( currentWidth );
-					this.indices.push( x-currentWidth );
-					currentChar++;
-					currentWidth = 0;
-				}
-			}
-			this.widthMap.push( currentWidth );
-			this.indices.push( x-currentWidth );
-		},
-
 		_getVendorAttribute: function( el, attr ) {
 			var uc = attr.charAt(0).toUpperCase() + attr.substr(1);
 			return el[attr] || el['ms'+uc] || el['moz'+uc] || el['webkit'+uc] || el['o'+uc];

@@ -53,6 +53,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
     globalAlpha: 1,
 
     init: function(wantWidth, wantHeight) {
+
       this.wantWidth = wantWidth;
       this.wantHeight = wantHeight;
 
@@ -93,7 +94,8 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         }
 
         if (!this.gameCanvas) {
-          this.gameCanvas = document.createElement("canvas");
+          this.gameCanvas = document.createElement(navigator.isCocoonJS ? 'screencanvas' : 'canvas');
+//          this.gameCanvas = document.createElement("canvas");
         }
 
         width = Math.round(width * this.globalScale);
@@ -104,13 +106,13 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         this.gameCanvas.setAttribute('id', 'gameCanvas');
 
         this.gameCanvas.style.position = "absolute";
+
         this.gameCanvas.style.left = Math.round((pageWidth - width) * 0.5) + "px";
         this.gameCanvas.style.top = Math.round((pageHeight - height) * 0.5) + "px";
-        this.gameCanvas.style.zIndex = 1;
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
-          document.body.style.zIndex = 1;
+          console.log("Appending canvas...");
         }
 
         this.setCanvas(this.gameCanvas);
