@@ -8,13 +8,21 @@ joe.SpriteSheet = new joe.ClassEx({
   cols: 0,
   spriteWidth: 0,
   spriteHeight: 0,
+  alignX: 0,
+  alignY: 0,
 
-  init: function(srcImage, rows, cols) {
+  init: function(srcImage, rows, cols, alignX, alignY) {
     this.srcImage = srcImage;
     this.rows = Math.max(1, rows);
     this.cols = Math.max(1, cols);
     this.spriteWidth = this.srcImage.width / this.cols;
     this.spriteHeight = this.srcImage.height / this.rows;
+    this.setAlignment(alignX, alignY);
+  },
+
+  setAlignment: function(alignX, alignY) {
+    this.alignX = alignX || 0;
+    this.alignY = alignY || 0;
   },
 
   getCellWidth: function() {
@@ -26,32 +34,19 @@ joe.SpriteSheet = new joe.ClassEx({
   },
 
   draw: function(gfx, x, y, row, col) {
+    var index = row;
+
     joe.assert(row >= 0 && row < this.rows);
     joe.assert(col >= 0 && col < this.cols);
     joe.assert(gfx);
 
+    if (typeof(col) === 'undefined') {
+      // Interpret the 'row' as a pure index.
+      row = Math.floor(index / this.cols);
+      col = index % this.cols;
+    }
+
     gfx.drawImage(this.srcImage, col * this.spriteWidth, row * this.spriteHeight, this.spriteWidth, this.spriteHeight,
-                       x, y, this.spriteWidth, this.spriteHeight);
-  },
-
-  drawIndexed: function(gfx, x, y, index) {
-    var row = 0;
-    var col = 0;
-
-    joe.assert(index >= 0 && index < this.rows * this.cols);
-
-    row = Math.floor(index / this.cols);
-    col = index % this.cols;
-
-    // TODO: draw directly instead of making a function call.
-    this.draw(gfx, x, y, row, col);
-  },
-
-  drawIndexedAligned: function(gfx, x, y, index, alignX, alignY) {
-    var alignX = x - alignX * this.spriteWidth;
-    var alignY = y - alignY * this.spriteHeight;
-
-    // TODO: draw directly instead of making a function call.
-    this.drawIndexed(gfx, alignX, alignY, index);
+                  x - this.alignX * this.spriteWidth, y - this.alignY * this.spriteHeight, this.spriteWidth, this.spriteHeight);
   }
 });

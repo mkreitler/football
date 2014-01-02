@@ -28,8 +28,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.5999937"
-     inkscape:cx="318.16414"
-     inkscape:cy="487.73126"
+     inkscape:cx="409.6634"
+     inkscape:cy="518.50057"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -473,21 +473,108 @@
          id="rect3069"
          style="fill:none;stroke:none;stroke-width:3.96401334000000020;stroke-miterlimit:4;stroke-dasharray:none" />
     </g>
+    <g
+       id="g3848">
+      <rect
+         y="429.05301"
+         x="133.07724"
+         height="16"
+         width="16"
+         id="rect3068"
+         style="fill:#b3b3b3;stroke:none" />
+      <rect
+         style="fill:#b3b3b3;stroke:none"
+         id="rect3838"
+         width="16"
+         height="16"
+         x="149.07724"
+         y="429.05301" />
+      <rect
+         style="fill:#b3b3b3;stroke:none"
+         id="rect3840"
+         width="16"
+         height="16"
+         x="133.07724"
+         y="445.05301" />
+      <rect
+         y="445.05301"
+         x="149.07724"
+         height="16"
+         width="16"
+         id="rect3842"
+         style="fill:#b3b3b3;stroke:none" />
+      <rect
+         style="fill:#b3b3b3;stroke:none"
+         id="rect3844"
+         width="16"
+         height="16"
+         x="133.07724"
+         y="461.05301" />
+      <rect
+         y="461.05301"
+         x="149.07724"
+         height="16"
+         width="16"
+         id="rect3846"
+         style="fill:#b3b3b3;stroke:none" />
+    </g>
+    <rect
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       id="rect3856"
+       width="20"
+       height="20"
+       x="191.15431"
+       y="430.82227" />
+    <rect
+       y="430.82227"
+       x="211.15431"
+       height="20"
+       width="20"
+       id="rect3858"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
+    <rect
+       y="450.82227"
+       x="191.15431"
+       height="20"
+       width="20"
+       id="rect3860"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
+    <rect
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       id="rect3862"
+       width="20"
+       height="20"
+       x="211.15431"
+       y="450.82227" />
+    <rect
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       id="rect3864"
+       width="20"
+       height="20"
+       x="191.15431"
+       y="470.82227" />
+    <rect
+       y="470.82227"
+       x="211.15431"
+       height="20"
+       width="20"
+       id="rect3866"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
     <path
        sodipodi:type="arc"
-       style="fill:none;stroke:#aa0000;stroke-width:6.09325552;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#000000;stroke-width:6.09325552;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="path3755"
        sodipodi:cx="187.85715"
        sodipodi:cy="309.09448"
        sodipodi:rx="16.428572"
        sodipodi:ry="16.428572"
        d="m 204.28572,309.09448 a 16.428572,16.428572 0 1 1 -32.85714,0 16.428572,16.428572 0 1 1 32.85714,0 z"
-       transform="matrix(0.44607029,0,0,0.44510074,125.02745,347.76099)"
+       transform="matrix(0.44607029,0,0,0.44510074,177.35682,323.24408)"
        inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
-       transform="matrix(0.44607029,0,0,0.21287427,125.07853,437.64316)"
+       transform="matrix(0.44607029,0,0,0.21287427,177.35682,415.024)"
        d="m 204.28572,309.09448 a 16.428572,16.428572 0 1 1 -32.85714,0 16.428572,16.428572 0 1 1 32.85714,0 z"
        sodipodi:ry="16.428572"
        sodipodi:rx="16.428572"
@@ -500,14 +587,14 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
-       transform="matrix(0.44607029,0,0,0.44510074,143.38232,347.76099)"
+       transform="matrix(0.44607029,0,0,0.44510074,197.35682,323.24408)"
        d="m 204.28572,309.09448 a 16.428572,16.428572 0 1 1 -32.85714,0 16.428572,16.428572 0 1 1 32.85714,0 z"
        sodipodi:ry="16.428572"
        sodipodi:rx="16.428572"
        sodipodi:cy="309.09448"
        sodipodi:cx="187.85715"
        id="path3761"
-       style="fill:none;stroke:#112b00;stroke-width:6.09325552;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#e6e6e6;stroke-width:6.09325551999999960;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        sodipodi:type="arc"
        inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
        inkscape:export-xdpi="90"
@@ -516,28 +603,11 @@
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
        inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
-       id="g3854"
-       transform="matrix(0.68567381,0,0,0.68418346,89.321796,162.40885)">
-      <path
-         inkscape:connector-curvature="0"
-         id="path3850"
-         d="m 165,455.21932 18.57143,-18.57143"
-         style="fill:#aa0000;fill-opacity:1;stroke:#aa0000;stroke-width:2.97301006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-      <path
-         style="fill:#aa0000;fill-opacity:1;stroke:#aa0000;stroke-width:2.97301006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         d="m 165,436.64789 18.57143,18.57143"
-         id="path3852"
-         inkscape:connector-curvature="0" />
-    </g>
-    <g
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
-       transform="matrix(0.68567381,0,0,0.68418346,107.67666,162.40885)"
+       transform="matrix(0.68567381,0,0,0.68418346,161.65116,135.72187)"
        id="g3858"
-       style="fill:#112b00;fill-opacity:1;stroke:#112b00;stroke-width:0.99100333;stroke-opacity:1">
+       style="fill:#112b00;fill-opacity:1;stroke:#e6e6e6;stroke-width:0.99100332999999996;stroke-opacity:1">
       <path
-         style="fill:#112b00;fill-opacity:1;stroke:#112b00;stroke-width:2.97301006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         style="fill:#112b00;fill-opacity:1;stroke:#e6e6e6;stroke-width:2.97301006000000000;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
          d="m 165,455.21932 18.57143,-18.57143"
          id="path3860"
          inkscape:connector-curvature="0" />
@@ -545,12 +615,12 @@
          inkscape:connector-curvature="0"
          id="path3862"
          d="m 165,436.64789 18.57143,18.57143"
-         style="fill:#112b00;fill-opacity:1;stroke:#112b00;stroke-width:2.97301006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+         style="fill:#112b00;fill-opacity:1;stroke:#e6e6e6;stroke-width:2.97301006000000000;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     </g>
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\ball.png"
        sodipodi:type="arc"
        style="fill:none;stroke:#552200;stroke-width:8.81083298;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="path3088"
@@ -559,6 +629,169 @@
        sodipodi:rx="16.428572"
        sodipodi:ry="16.428572"
        d="m 204.28572,309.09448 a 16.428572,16.428572 0 1 1 -32.85714,0 16.428572,16.428572 0 1 1 32.85714,0 z"
-       transform="matrix(0.44607029,0,0,0.21287427,143.32651,437.64316)" />
+       transform="matrix(0.44607029,0,0,0.21287427,387.35682,455.024)" />
+    <rect
+       style="fill:none;stroke:none"
+       id="rect3066"
+       width="53.846283"
+       height="27.307758"
+       x="177.30812"
+       y="97.554451"
+       transform="translate(0,308.2677)" />
+    <rect
+       y="490.82227"
+       x="251.15431"
+       height="20"
+       width="20"
+       id="rect3882"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
+    <rect
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       id="rect3884"
+       width="20"
+       height="20"
+       x="271.1543"
+       y="490.82227" />
+    <g
+       id="g3972"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\players.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g3960">
+        <g
+           id="g3890"
+           transform="translate(320,40)">
+          <path
+             transform="translate(0,308.2677)"
+             d="m 204.61588,244.09328 c 0,7.43462 -6.02695,13.46157 -13.46157,13.46157 -7.43462,0 -13.46157,-6.02695 -13.46157,-13.46157 0,-7.43462 6.02695,-13.46157 13.46157,-13.46157 7.43462,0 13.46157,6.02695 13.46157,13.46157 z"
+             sodipodi:ry="13.461571"
+             sodipodi:rx="13.461571"
+             sodipodi:cy="244.09328"
+             sodipodi:cx="191.15431"
+             id="path3886"
+             style="fill:none;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             sodipodi:type="arc" />
+          <path
+             sodipodi:type="arc"
+             style="fill:none;stroke:#ffffff;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             id="path3888"
+             sodipodi:cx="191.15431"
+             sodipodi:cy="244.09328"
+             sodipodi:rx="13.461571"
+             sodipodi:ry="13.461571"
+             d="m 204.61588,244.09328 c 0,7.43462 -6.02695,13.46157 -13.46157,13.46157 -7.43462,0 -13.46157,-6.02695 -13.46157,-13.46157 0,-7.43462 6.02695,-13.46157 13.46157,-13.46157 7.43462,0 13.46157,6.02695 13.46157,13.46157 z"
+             transform="translate(0,308.2677)" />
+        </g>
+        <g
+           id="g3912"
+           transform="translate(0,41.530829)">
+          <g
+             style="fill:#ffffff;stroke:#000000;stroke-width:5.0780344;stroke-miterlimit:4;stroke-dasharray:none"
+             transform="matrix(1.1827164,0,0,1.1804039,266.56218,24.448381)"
+             id="g3854"
+             inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+             inkscape:export-xdpi="90"
+             inkscape:export-ydpi="90">
+            <path
+               style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5.0780344;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+               d="m 165,455.21932 18.57143,-18.57143"
+               id="path3850"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path3852"
+               d="m 165,436.64789 18.57143,18.57143"
+               style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5.0780344;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          </g>
+          <g
+             inkscape:export-ydpi="90"
+             inkscape:export-xdpi="90"
+             inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+             id="g3906"
+             transform="matrix(1.1827164,0,0,1.1804039,266.56218,24.448381)"
+             style="fill:none;stroke:#ffffff;stroke-width:3.38535619;stroke-miterlimit:4;stroke-dasharray:none">
+            <path
+               inkscape:connector-curvature="0"
+               id="path3908"
+               d="m 165,455.21932 18.57143,-18.57143"
+               style="fill:none;stroke:#ffffff;stroke-width:3.38535619;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+            <path
+               style="fill:none;stroke:#ffffff;stroke-width:3.38535619;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+               d="m 165,436.64789 18.57143,18.57143"
+               id="path3910"
+               inkscape:connector-curvature="0" />
+          </g>
+        </g>
+      </g>
+      <g
+         transform="translate(0,23.076859)"
+         id="g3948">
+        <g
+           id="g3902"
+           transform="translate(240,-20)">
+          <path
+             transform="translate(80,308.2677)"
+             d="m 204.61588,244.09328 c 0,7.43462 -6.02695,13.46157 -13.46157,13.46157 -7.43462,0 -13.46157,-6.02695 -13.46157,-13.46157 0,-7.43462 6.02695,-13.46157 13.46157,-13.46157 7.43462,0 13.46157,6.02695 13.46157,13.46157 z"
+             sodipodi:ry="13.461571"
+             sodipodi:rx="13.461571"
+             sodipodi:cy="244.09328"
+             sodipodi:cx="191.15431"
+             id="path3898"
+             style="fill:none;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             sodipodi:type="arc" />
+          <path
+             sodipodi:type="arc"
+             style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             id="path3896"
+             sodipodi:cx="191.15431"
+             sodipodi:cy="244.09328"
+             sodipodi:rx="13.461571"
+             sodipodi:ry="13.461571"
+             d="m 204.61588,244.09328 c 0,7.43462 -6.02695,13.46157 -13.46157,13.46157 -7.43462,0 -13.46157,-6.02695 -13.46157,-13.46157 0,-7.43462 6.02695,-13.46157 13.46157,-13.46157 7.43462,0 13.46157,6.02695 13.46157,13.46157 z"
+             transform="translate(80,308.2677)" />
+        </g>
+        <g
+           id="g3940"
+           transform="translate(-1.5384413,-60)">
+          <g
+             inkscape:export-ydpi="90"
+             inkscape:export-xdpi="90"
+             inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+             id="g3922"
+             transform="matrix(1.1827164,0,0,1.1804039,266.56218,65.97921)"
+             style="fill:#ffffff;stroke:#ffffff;stroke-width:5.0780344;stroke-miterlimit:4;stroke-dasharray:none">
+            <path
+               inkscape:connector-curvature="0"
+               id="path3924"
+               d="m 165,455.21932 18.57143,-18.57143"
+               style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:5.0780344;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+            <path
+               style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:5.0780344;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+               d="m 165,436.64789 18.57143,18.57143"
+               id="path3926"
+               inkscape:connector-curvature="0" />
+          </g>
+          <g
+             style="fill:none;stroke:#000000;stroke-width:3.38535619;stroke-miterlimit:4;stroke-dasharray:none"
+             transform="matrix(1.1827164,0,0,1.1804039,266.56218,65.97921)"
+             id="g3928"
+             inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+             inkscape:export-xdpi="90"
+             inkscape:export-ydpi="90">
+            <path
+               style="fill:none;stroke:#000000;stroke-width:3.38535619;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+               d="m 165,455.21932 18.57143,-18.57143"
+               id="path3930"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path3932"
+               d="m 165,436.64789 18.57143,18.57143"
+               style="fill:none;stroke:#000000;stroke-width:3.38535619;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          </g>
+        </g>
+      </g>
+    </g>
   </g>
 </svg>

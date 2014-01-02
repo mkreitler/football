@@ -10,7 +10,7 @@ joe.kinematicObject = {
     this.pos = new joe.MathEx.vec2(x || 0, y || 0);
     this.vel = new joe.MathEx.vec2(vx || 0, vy || 0);
     this.acc = new joe.MathEx.vec2(ax || 0, ay || 0);
-    this.oldPos = new joe.MathEx.vec2(pos.x, pos.y);
+    this.oldPos = new joe.MathEx.vec2(this.pos.x, this.pos.y);
   },
 
   kinUpdate: function(dt) {
@@ -37,7 +37,7 @@ joe.physicsCollider = {
   collisionMasks: {blocks: 0, blockedBy: 0},
 
   collideInit: function(x, y, w, h, blocksMask, blockedByMask) {
-    bounds = new joe.MathEx.rect2(0, 0, 0, 0),
+    this.bounds = new joe.MathEx.rect2(0, 0, 0, 0),
     this.bounds.x = x || 0;
     this.bounds.y = y || 0;
     this.bounds.w = w || 0;

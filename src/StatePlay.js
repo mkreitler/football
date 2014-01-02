@@ -1,37 +1,39 @@
 fb.StatePlayClass = new joe.ClassEx({
-  CMD_TYPE: {NONE:0, LEFT:-1, RIGHT:1},
-  CMD_TIMEOUT: 0.5,         // Reset inputs after 1/2 second of inactivity.
-  CMD_HOLD_INTERVAL: 0.25,  // Keys held for more than 1/4 second register as "hold" events.
+  IO_TYPE: {NONE:0, LEFT:-1, RIGHT:1},
+  IO_TIMEOUT: 0.5,         // Reset inputs after 1/2 second of inactivity.
+  IO_HOLD_INTERVAL: 0.25,  // Keys held for more than 1/4 second register as "hold" events.
   IO_STATE: {UP:0, DOWN:1, HELD:2},
+  CMD_TYPE: {NONE:0, LEFT:1, RIGHT:2, ACTION:3},
 },
 {
   font: null,
-  spriteSheet: null,
+  spriteSheets: null,
+  player: null,
+  ball: null,
   fieldImg: null,
   playView: null,
   playCam: null,
   ioStates: {left:0, right:0},
   commandTimers: {left:0, right:0},
-  lastUp: 0, // Corresponds to CMD_TYPE.NONE
+  lastUp: 0, // Corresponds to IO_TYPE.NONE
+  lastInput: 0, // Corresponds to IO_Type.NONE
+  lastCommand: 0, // Corresponds to CMD_TYPE.NONE
+  newInput: 0, // Corresponds to IO_TYPE.NONE
 
   touchDown: function(id, x, y) {
     if (x < joe.Graphics.getScreenWidth() / 2) {
-      console.log(">>> touchDownLeft");
       this.keyPress(joe.KeyInput.KEYS.LEFT);
     }
     else {
-      console.log(">>> touchDownRight");
       this.keyPress(joe.KeyInput.KEYS.RIGHT);
     }
   },
 
   touchUp: function(id, x, y) {
     if (x < joe.Graphics.getScreenWidth() / 2) {
-      console.log(">>> touchUpLeft");
       this.keyRelease(joe.KeyInput.KEYS.LEFT);
     }
     else {
-      console.log(">>> touchUpRight");
       this.keyRelease(joe.KeyInput.KEYS.RIGHT);
     }
   },
@@ -40,10 +42,12 @@ fb.StatePlayClass = new joe.ClassEx({
     if (keyCode === joe.KeyInput.KEYS.LEFT) {
       this.ioStates.left = fb.StatePlayClass.IO_STATE.DOWN;
       this.commandTimers.left = 0;
+      this.newInput = fb.StatePlayClass.IO_TYPE.LEFT;
     }
     else if (keyCode === joe.KeyInput.KEYS.RIGHT) {
       this.ioStates.right = fb.StatePlayClass.IO_STATE.DOWN;
       this.commandTimers.right = 0;
+      this.newInput = fb.StatePlayClass.IO_TYPE.RIGHT;
     }
 
     return true;
@@ -60,10 +64,17 @@ fb.StatePlayClass = new joe.ClassEx({
     return true;
   },
 
-  init: function(font, spriteImg, fieldImg) {
+  init: function(font, spriteSheets, fieldImg) {
     this.font = font;
-    this.spriteSheet = new joe.SpriteSheet(spriteImg, 3, 2);
+    this.spriteSheets = spriteSheets;
     this.fieldImg = fieldImg;
+
+    this.player = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.PLAYERS], 2, 2),
+                                 0, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.9,
+                                 0, 0, 0, 0);
+    this.ball = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.BALL], 1, 1),
+                                0, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.5,
+                                0, 0, 0, 0);
 
     // Create the playCam and playView.
     this.playCam = new joe.Camera(joe.Graphics.getWidth(), this.fieldImg.height);
@@ -90,16 +101,12 @@ fb.StatePlayClass = new joe.ClassEx({
 
     this.playView.draw(gfx);
 
+    this.ball.draw(gfx);
+    this.player.draw(gfx);
+
     if (this.font) {
-      if (this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP &&
-          this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Both!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
-      }
-      else if (this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Left!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
-      }
-      else if (this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-        this.font.draw(gfx, "Right!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
+      if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
+        this.font.draw(gfx, "ACTION!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
       }
     }
 
@@ -113,14 +120,49 @@ fb.StatePlayClass = new joe.ClassEx({
   update: function(dt, gameTime) {
     var key = null;
 
+    // Update the key states.
     for (key in this.ioStates) {
       if (this.ioStates[key] === fb.StatePlayClass.IO_STATE.DOWN) {
         this.commandTimers[key] += dt;
-        if (this.commandTimers[key] >= fb.StatePlayClass.CMD_HOLD_INTERVAL) {
+        if (this.commandTimers[key] >= fb.StatePlayClass.IO_HOLD_INTERVAL) {
           this.ioStates[key] = fb.StatePlayClass.IO_STATE.HELD;
         }
       }
     }
+
+    // Convert key states into commands.
+    if (this.ioStates["left"] === fb.StatePlayClass.IO_STATE.HELD &&
+        this.ioStates["right"] === fb.StatePlayClass.IO_STATE.HELD) {
+        if (this.lastCommand !== fb.StatePlayClass.CMD_TYPE.ACTION) {
+          this.startAction();
+        }
+        else {
+          this.continueAction();
+        }
+    }
+    else {
+      if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
+        this.triggerAction();
+      }
+    }
+  },
+
+  startAction: function() {
+    this.lastCommand = fb.StatePlayClass.CMD_TYPE.ACTION;
+  },
+
+  continueAction: function() {
+  },
+
+  triggerAction: function() {
+    if (this.lastCommand !== fb.StatePlayClass.CMD_TYPE.ACTION) {
+      // Start a new action.
+    }
+    else {
+      // Continue the existing action.
+    }
+
+    this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
   }
 });
 

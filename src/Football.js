@@ -1,10 +1,12 @@
 fb.GameClass = new joe.ClassEx({
   // Class Definition /////////////////////////////////////////////////////////
+  SPRITE_INDEX: { PLAYERS: 0,
+                  BALL: 1}
 },
 {
   // Instance Definition //////////////////////////////////////////////////////
   sysFont: null,
-  spriteSheet: null,
+  spriteSheets: null,
   field: null,
   titleState: null,
   playState: null,
@@ -17,13 +19,15 @@ fb.GameClass = new joe.ClassEx({
                                                         fb.onResourceLoadFailed,
                                                         this);
 
-    this.spriteSheet = joe.Resources.loader.loadImage("img/football.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
+    this.spriteSheets = [];
+    this.spriteSheets.push(joe.Resources.loader.loadImage("img/players.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this));
+    this.spriteSheets.push(joe.Resources.loader.loadImage("img/ball.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this));
     this.field = joe.Resources.loader.loadImage("img/field.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
   },
 
   start: function() {
     this.titleState = new fb.StateTitleClass(this.sysFont);
-    this.playState = new fb.StatePlayClass(this.sysFont, this.spriteSheet, this.field);
+    this.playState = new fb.StatePlayClass(this.sysFont, this.spriteSheets, this.field);
 
     this.startTitleState();
 
