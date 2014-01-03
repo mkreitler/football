@@ -37,7 +37,7 @@ joe.SpriteSheet = new joe.ClassEx({
     var index = row;
 
     joe.assert(row >= 0 && row < this.rows);
-    joe.assert(col >= 0 && col < this.cols);
+    joe.assert(typeof(col) === 'undefined' || (col >= 0 && col < this.cols));
     joe.assert(gfx);
 
     if (typeof(col) === 'undefined') {
