@@ -36,15 +36,16 @@ joe.SpriteSheet = new joe.ClassEx({
   draw: function(gfx, x, y, row, col) {
     var index = row;
 
-    joe.assert(row >= 0 && row < this.rows);
-    joe.assert(typeof(col) === 'undefined' || (col >= 0 && col < this.cols));
-    joe.assert(gfx);
-
     if (typeof(col) === 'undefined') {
       // Interpret the 'row' as a pure index.
       row = Math.floor(index / this.cols);
       col = index % this.cols;
     }
+
+    joe.assert(row >= 0 && row < this.rows, "Rows = " + this.rows);
+    joe.assert(typeof(col) === 'undefined' || (col >= 0 && col < this.cols));
+    joe.assert(gfx);
+
 
     gfx.drawImage(this.srcImage, col * this.spriteWidth, row * this.spriteHeight, this.spriteWidth, this.spriteHeight,
                   x - this.alignX * this.spriteWidth, y - this.alignY * this.spriteHeight, this.spriteWidth, this.spriteHeight);

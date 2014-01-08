@@ -95,7 +95,6 @@ fb.onResourceLoadFailed = function(resourceURL) {
 };
 
 window.onload = function() {
-  console.log("Creating game...");
   fb.game = new fb.GameClass();
 
   // Accept input.

@@ -4,6 +4,8 @@ fb.StatePlayClass = new joe.ClassEx({
   IO_HOLD_INTERVAL: 200,  // Keys held for more than 1/4 second register as "hold" events.
   IO_STATE: {UP:0, DOWN:1, TAPPED:2, HELD:3},
   CMD_TYPE: {NONE:0, LEFT:1, RIGHT:2, FORWARD:3, ACTION:4},
+  IO_TILT: {LEFT_START: 3, LEFT_RESET: 1, RIGHT_START: -3, RIGHT_RESET: -1},
+  TILT_STATE: {LEFT: 1, STRAIGHT: 0, RIGHT: -1},
 },
 {
   font: null,
@@ -20,6 +22,8 @@ fb.StatePlayClass = new joe.ClassEx({
   lastCommand: 0, // Corresponds to CMD_TYPE.NONE
   newInput: 0, // Corresponds to IO_TYPE.NONE
   resetTimer: 0,
+  tilt: {x:0, y:0, z:0},
+  tiltState: 0, // Corresponds to TILT_STATE.STRAIGHT
 
   touchDown: function(id, x, y) {
     if (x < joe.Graphics.getScreenWidth() / 2) {
@@ -75,8 +79,8 @@ fb.StatePlayClass = new joe.ClassEx({
     this.player = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.PLAYERS], 2, 2),
                                  0, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.9,
                                  0, 0, 0, 0);
-    this.ball = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.BALL], 1, 1),
-                                0, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.5,
+    this.ball = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.BALL], 1, 4),
+                                2, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.5,
                                 0, 0, 0, 0);
 
     // Create the playCam and playView.
@@ -90,11 +94,43 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   enter: function() {
-
+    joe.Accelerometer.addListener(this);
   },
 
   exit: function() {
+    joe.Accelerometer.removeListener(this);
+  },
 
+  accelChanged: function(x, y, z) {
+    this.tilt.x = Math.round(x * 100) / 100;
+    this.tilt.y = Math.round(y * 100) / 100;
+    this.tilt.z = Math.round(z * 100) / 100;
+
+    if (this.tiltState === fb.StatePlayClass.TILT_STATE.STRAIGHT) {
+      if (this.tilt.x > fb.StatePlayClass.IO_TILT.LEFT_START) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.LEFT;
+      }
+      else if (this.tilt.x < fb.StatePlayClass.IO_TILT.RIGHT_START) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.RIGHT;
+      }
+    }
+    else if (this.tiltState === fb.StatePlayClass.TILT_STATE.LEFT) {
+      if (this.tilt.x < fb.StatePlayClass.IO_TILT.RIGHT_START) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.RIGHT;
+      }
+      else if (this.tilt.x < fb.StatePlayClass.IO_TILT.LEFT_RESET) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.STRAIGHT;
+      }
+    }
+    else {
+      // Must be TILT_STATE.RIGHT...
+      if (this.tilt.x > fb.StatePlayClass.IO_TILT.LEFT_START) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.LEFT;
+      }
+      else if (this.tilt.x > fb.StatePlayClass.IO_TILT.RIGHT_RESET) {
+        this.tiltState = fb.StatePlayClass.TILT_STATE.STRAIGHT;
+      }
+    }
   },
 
   draw: function(gfx) {
@@ -108,6 +144,8 @@ fb.StatePlayClass = new joe.ClassEx({
     this.player.draw(gfx);
 
     if (this.font) {
+//      this.font.draw(gfx, "X: " + this.tilt.x + "  Y: " + this.tilt.y + "  Z: " + this.tilt.z, joe.Graphics.getWidth() / 2, 50, joe.Resources.BitmapFont.ALIGN.CENTER);
+
       if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
         this.font.draw(gfx, "ACTION!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
       }
@@ -122,6 +160,10 @@ fb.StatePlayClass = new joe.ClassEx({
 
   update: function(dt, gameTime) {
     var key = null;
+
+    // Update accelerometer (handheld only)
+    if (joe.Accelerometer.isSupported && navigator.isCocoonJS) {
+    }
 
     // Update the key states.
     for (key in this.ioStates) {
@@ -216,41 +258,77 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   tapLeft: function() {
-    if (this.lastInput === fb.StatePlayClass.IO_TYPE.LEFT ||
-        this.lastCommand === fb.StatePlayClass.CMD_TYPE.LEFT) {
-      this.moveLeft();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
-    }
-    else if (this.lastInput === fb.StatePlayClass.IO_TYPE.RIGHT &&
-             this.lastCommand !== fb.StatePlayClass.CMD_TYPE.RIGHT) {
-      this.moveForward();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+    if (joe.Accelerometer.isSupported && navigator.isCocoonJS) {
+      if (this.tiltState === fb.StatePlayClass.TILT_STATE.STRAIGHT) {
+        this.moveForward();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+      }
+      else if (this.tiltState === fb.StatePlayClass.TILT_STATE.LEFT) {
+        this.moveLeft();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
+      }
+      else {
+        // Must be TILT_STATE.RIGHT...
+        this.moveRight();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.RIGHT;
+      }
     }
     else {
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
-    }
+      // Web interface
+      if (this.lastInput === fb.StatePlayClass.IO_TYPE.LEFT ||
+          this.lastCommand === fb.StatePlayClass.CMD_TYPE.LEFT) {
+        this.moveLeft();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
+      }
+      else if (this.lastInput === fb.StatePlayClass.IO_TYPE.RIGHT &&
+               this.lastCommand !== fb.StatePlayClass.CMD_TYPE.RIGHT) {
+        this.moveForward();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+      }
+      else {
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
+      }
 
-    this.resetTimer = 0;
-    this.lastInput = fb.StatePlayClass.IO_TYPE.LEFT;
+      this.resetTimer = 0;
+      this.lastInput = fb.StatePlayClass.IO_TYPE.LEFT;
+    }
   },
 
   tapRight: function() {
-    if (this.lastInput === fb.StatePlayClass.IO_TYPE.RIGHT ||
-        this.lastCommand === fb.StatePlayClass.CMD_TYPE.RIGHT) {
+    if (joe.Accelerometer.isSupported && navigator.isCocoonJS) {
+      if (this.tiltState === fb.StatePlayClass.TILT_STATE.STRAIGHT) {
+        this.moveForward();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+      }
+      else if (this.tiltState === fb.StatePlayClass.TILT_STATE.LEFT) {
+        this.moveLeft();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
+      }
+      else {
+        // Must be TILT_STATE.RIGHT...
         this.moveRight();
         this.lastCommand = fb.StatePlayClass.CMD_TYPE.RIGHT;
-    }
-    else if (this.lastInput === fb.StatePlayClass.IO_TYPE.LEFT &&
-             this.lastCommand !== fb.StatePlayClass.CMD_TYPE.LEFT) {
-      this.moveForward();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+      }
     }
     else {
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
-    }
+      // Web interface
+      if (this.lastInput === fb.StatePlayClass.IO_TYPE.RIGHT ||
+          this.lastCommand === fb.StatePlayClass.CMD_TYPE.RIGHT) {
+          this.moveRight();
+          this.lastCommand = fb.StatePlayClass.CMD_TYPE.RIGHT;
+      }
+      else if (this.lastInput === fb.StatePlayClass.IO_TYPE.LEFT &&
+               this.lastCommand !== fb.StatePlayClass.CMD_TYPE.LEFT) {
+        this.moveForward();
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
+      }
+      else {
+        this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
+      }
 
-    this.resetTimer;
-    this.lastInput = fb.StatePlayClass.IO_TYPE.RIGHT;
+      this.resetTimer;
+      this.lastInput = fb.StatePlayClass.IO_TYPE.RIGHT;
+    }
   },
 
   startAction: function() {

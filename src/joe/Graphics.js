@@ -112,7 +112,6 @@ joe.GraphicsClass = new joe.ClassEx(null, [
 
         if (bAppendCanvas) {
           document.body.appendChild(this.gameCanvas);
-          console.log("Appending canvas...");
         }
 
         this.setCanvas(this.gameCanvas);

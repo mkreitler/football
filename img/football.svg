@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -794,5 +794,32 @@
         </g>
       </g>
     </g>
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       sodipodi:type="arc"
+       style="fill:none;stroke:#552200;stroke-width:8.81083298;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3101"
+       sodipodi:cx="187.85715"
+       sodipodi:cy="309.09448"
+       sodipodi:rx="16.428572"
+       sodipodi:ry="16.428572"
+       d="m 204.28572,309.09448 a 16.428572,16.428572 0 1 1 -32.85714,0 16.428572,16.428572 0 1 1 32.85714,0 z"
+       transform="matrix(0,0.44607029,-0.21287427,0,346.95257,397.02477)" />
+    <rect
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       id="rect3115"
+       width="20"
+       height="20"
+       x="251.15431"
+       y="410.82227" />
+    <rect
+       y="410.82227"
+       x="271.1543"
+       height="20"
+       width="20"
+       id="rect3117"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
   </g>
 </svg>
