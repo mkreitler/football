@@ -30,7 +30,7 @@ joe.MathEx.clip = function(r1, r2) {
   }
   else {
     result.x = Math.max(r1.x, r2.x);
-    result.w = Math.min(r1.x + r1.w + r2.x + r2.w) - result.x;
+    result.w = Math.min(r1.x + r1.w, r2.x + r2.w) - result.x;
   }
 
   if (result) {
@@ -47,7 +47,7 @@ joe.MathEx.clip = function(r1, r2) {
     }
     else {
       result.y = Math.max(r1.y, r2.y);
-      result.h = Math.min(r1.y + r1.h + r2.y + r2.h) - result.y;
+      result.h = Math.min(r1.y + r1.h, r2.y + r2.h) - result.y;
     }
   }
 

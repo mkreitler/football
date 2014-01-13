@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -523,18 +523,18 @@
        id="rect3856"
        width="20"
        height="20"
-       x="191.15431"
+       x="171.15431"
        y="430.82227" />
     <rect
        y="430.82227"
-       x="211.15431"
+       x="191.15431"
        height="20"
        width="20"
        id="rect3858"
        style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
     <rect
        y="450.82227"
-       x="191.15431"
+       x="171.15431"
        height="20"
        width="20"
        id="rect3860"
@@ -544,18 +544,18 @@
        id="rect3862"
        width="20"
        height="20"
-       x="211.15431"
+       x="191.15431"
        y="450.82227" />
     <rect
        style="fill:#b3b3b3;fill-opacity:1;stroke:none"
        id="rect3864"
        width="20"
        height="20"
-       x="191.15431"
+       x="171.15431"
        y="470.82227" />
     <rect
        y="470.82227"
-       x="211.15431"
+       x="191.15431"
        height="20"
        width="20"
        id="rect3866"
@@ -583,7 +583,7 @@
        id="path3757"
        style="fill:none;stroke:#552200;stroke-width:8.81083298;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        sodipodi:type="arc"
-       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\ball.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
@@ -639,19 +639,25 @@
        y="97.554451"
        transform="translate(0,308.2677)" />
     <rect
-       y="490.82227"
-       x="251.15431"
+       y="470.82227"
+       x="231.15431"
        height="20"
        width="20"
        id="rect3882"
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\ball.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <rect
        style="fill:#b3b3b3;fill-opacity:1;stroke:none"
        id="rect3884"
        width="20"
        height="20"
-       x="271.1543"
-       y="490.82227" />
+       x="291.1543"
+       y="470.82227"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\ball.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <g
        id="g3972"
        inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\players.png"
@@ -797,7 +803,7 @@
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\ball.png"
        sodipodi:type="arc"
        style="fill:none;stroke:#552200;stroke-width:8.81083298;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="path3101"
@@ -813,13 +819,19 @@
        width="20"
        height="20"
        x="251.15431"
-       y="410.82227" />
+       y="410.82227"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <rect
        y="410.82227"
        x="271.1543"
        height="20"
        width="20"
        id="rect3117"
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none" />
+       style="fill:#b3b3b3;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\xampp\htdocs\javascript\football\img\football.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>

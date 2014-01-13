@@ -8,20 +8,39 @@ joe.Camera = new joe.ClassEx({
 {
   // Instance Definition //////////////////////////////////////////////////////
   canvas: null,
-  destPos: {x:0, y:0},  // Position in the output buffer
-  viewRect: {x:0, y:0, w:0, h:0},
-  srcRect: {x:0, y:0, w:0, h:0},
+  destPos: {x:0, y:0},            // Position in the output buffer.
+  viewRect: {x:0, y:0, w:0, h:0}, // Window into the layer, determines size of off-screen buffer.
+  srcRect: {x:0, y:0, w:0, h:0},  // Window defining region of layer source to render into view buffer.
+  drawRect: {x:0, y:0, w:0, h:0}, // Window we will draw: overlap between viewRect and screen buffer.
   magnification: 1,
 
   init: function(width, height) {
     this.viewRect.w = Math.max(1, width);
     this.viewRect.h = Math.max(1, height);
 
+    this.clipToScreen();
+
     this.canvas = joe.Graphics.createOffscreenBuffer(this.viewRect.w, this.viewRect.h, false);
+  },
+
+  clipToScreen: function() {
+    var clipRect = {x:this.destPos.x, y:this.destPos.y, w:this.viewRect.w, h:this.viewRect.h},
+        screenRect = {x:0, y:0, w:joe.Graphics.getWidth(), h:joe.Graphics.getHeight()};
+
+    clipRect = joe.MathEx.clip(clipRect, screenRect);
+
+    this.drawRect.x = clipRect.x;
+    this.drawRect.y = clipRect.y;
+    this.drawRect.w = clipRect.w;
+    this.drawRect.h = clipRect.h;
   },
 
   getViewRect: function() {
     return this.viewRect;
+  },
+
+  getScreenRect: function() {
+    return this.drawRect;
   },
 
   getSourceRect: function() {
@@ -45,6 +64,8 @@ joe.Camera = new joe.ClassEx({
   setDestPosition: function(x, y) {
     this.destPos.x = x;
     this.destPos.y = y;
+
+    this.clipToScreen();
   },
 
   setMagnification: function(newmagnification) {
@@ -58,8 +79,10 @@ joe.Camera = new joe.ClassEx({
   },
 
   draw: function(gfx) {
-    if (gfx && this.canvas) {
-      gfx.drawImage(this.canvas, this.destPos.x, this.destPos.y);
+    if (gfx && this.canvas && this.drawRect.w >= 0 && this.drawRect.h >= 0) {
+      gfx.drawImage(this.canvas,
+                    0, 0, this.drawRect.w, this.drawRect.h,
+                    this.drawRect.x, this.drawRect.y, this.drawRect.w, this.drawRect.h);
     }
   }
 });

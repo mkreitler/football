@@ -20,6 +20,10 @@ joe.View = new joe.ClassEx({
     this.camera = camera;
   },
 
+  getCamera: function() {
+    return this.camera;
+  },
+
   draw: function(gfx) {
     var iLayer = 0,
         camGfx = null;
