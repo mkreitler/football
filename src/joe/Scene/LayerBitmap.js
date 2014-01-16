@@ -3,22 +3,28 @@
 
 joe.LayerBitmap = new joe.ClassEx({
 },
-{
-  bitmap: null,
+[
+  joe.View.LayerInterface,
+  
+  {
+    bitmap: null,
 
-  init: function(bitmap) {
-    joe.assert(bitmap instanceof Image);
+    init: function(bitmap) {
+      joe.assert(bitmap instanceof Image);
 
-    this.bitmap = bitmap;
-  },
+      this.bitmap = bitmap;
+    },
 
-  drawClipped: function(gfx, srcRect, scale) {
-    joe.assert(this.bitmap && this.bitmap instanceof Image);
+    drawClipped: function(gfx, srcRect, scale) {
+      joe.assert(this.bitmap && this.bitmap instanceof Image);
 
-    gfx.scale(scale, scale);
-    gfx.drawImage(this.bitmap, srcRect.x, srcRect.y, srcRect.w, srcRect.h,
-                  0, 0, srcRect.w, srcRect.h);
-    gfx.scale(1, 1);
+      if (scale) {
+        gfx.scale(scale, scale);
+        gfx.drawImage(this.bitmap, srcRect.x, srcRect.y, srcRect.w, srcRect.h,
+                      0, 0, srcRect.w, srcRect.h);
+        gfx.scale(1, 1);
+      }
+    }
   }
-});
+]);
 

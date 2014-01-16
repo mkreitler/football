@@ -3,6 +3,80 @@ joe.MathEx = {};
 joe.MathEx.EPSILON = 0.001;
 joe.MathEx.EPSILON_ANGLE = 0.0001;
 joe.MathEx.resultRect = {x:0, y:0, w:0, h:0};
+joe.MathEx.COS_TABLE = [];
+joe.MathEx.SIN_TABLE = [];
+joe.MathEx.TABLE_SIZE = 2048;
+joe.MathEx.TWO_PI = 2 * Math.PI;
+
+// Lookups --------------------------------------------------------------------
+joe.MathEx.buildTables = function() {
+  var i = 0;
+
+  for (i=0; i<joe.MathEx.TABLE_SIZE; ++i) {
+    joe.MathEx.COS_TABLE.push(Math.cos(2 * Math.PI * i / joe.MathEx.TABLE_SIZE));
+    joe.MathEx.SIN_TABLE.push(Math.sin(2 * Math.PI * i / joe.MathEx.TABLE_SIZE));
+  }
+};
+
+joe.MathEx.cos = function(angle) {
+  var branchCut = Math.floor(angle / joe.MathEx.TWO_PI),
+      lowIndex = 0,
+      highIndex = 0,
+      result = 0;
+
+  angle = angle - branchCut * joe.MathEx.TWO_PI;
+
+  // Angle is now in the range [0, 2PI).
+  
+  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.Math.TWO_PI;
+  highIndex = Math.floor(lowIndex);
+
+  if (Math.abs(lowIndex - highIndex) > joe.MathEx.EPSILON ) {
+    // LERP to final result.
+    result = joe.MathEx.COS_TABLE[highIndex] * (1 - (lowIndex - highIndex));
+    highIndex += 1;
+    result += joe.MathEx.COS_TABLE[highIndex] * (1 - (highIndex - lowIndex));
+  }
+  else {
+    result = joe.MathEx.COS_TABLE[highIndex];
+  }
+
+  return result;
+};
+
+joe.MathEx.sin = function(angle) {
+  var branchCut = Math.floor(angle / joe.MathEx.TWO_PI),
+      lowIndex = 0,
+      highIndex = 0,
+      result = 0;
+
+  angle = angle - branchCut * joe.MathEx.TWO_PI;
+
+  // Angle is now in the range [0, 2PI).
+  
+  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.Math.TWO_PI;
+  highIndex = Math.floor(lowIndex);
+
+  if (Math.abs(lowIndex - highIndex) > joe.MathEx.EPSILON ) {
+    // LERP to final result.
+    result = joe.MathEx.SIN_TABLE[highIndex] * (1 - (lowIndex - highIndex));
+    highIndex += 1;
+    result += joe.MathEx.SIN_TABLE[highIndex] * (1 - (highIndex - lowIndex));
+  }
+  else {
+    result = joe.MathEx.SIN_TABLE[highIndex];
+  }
+
+  return result;
+};
+
+joe.MathEx.tan = function(angle) {
+  var sin = joe.MathEx.sin(angle),
+      cos = joe.MathEx.cos(angle),
+      result = cos ? sin / cos : undefined;
+
+  return result;
+};
 
 // Rectangles ----------------------------------------------------------------
 joe.MathEx.rect2 = function(x, y, w, h) {
@@ -407,3 +481,5 @@ joe.MathEx.Spline3D = function() {
               z: this.zCubics[cubicNum].getValueAt(cubicPos)};
    };
 };
+
+joe.MathEx.buildTables();

@@ -28,9 +28,9 @@ joe.GUI.ToggleBox = new joe.ClassEx(
 
   // Instance Definition ////////////////////////////////////////////////////////
   [
-    joe.MathEx.AABBmodule,
-    joe.GUI.WidgetModule,
     {
+      requires: joe.GUI.WidgetModule,
+
       onColor: "#ffff00",
       offColor: "#0000ff",
       bOn: false,

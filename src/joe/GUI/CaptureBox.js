@@ -17,56 +17,54 @@ joe.GUI.CaptureBox = new joe.ClassEx(
   },
 
   // Instance Definition ////////////////////////////////////////////////////
-  [
-  	joe.MathEx.AABBmodule,
-  	joe.GUI.WidgetModule,
-  	{
-      onColor: "#ffff00",
-      offColor: "#0000ff",
-      bIsOn: false,
-      customDraw: null,
+  {
+    requires: joe.GUI.WidgetModule,
 
-      init: function(x, y, width, height, onColor, offColor, inputCallbacks, customDraw) {
-        this.AABBset(x, y, width, height);
+    onColor: "#ffff00",
+    offColor: "#0000ff",
+    bIsOn: false,
+    customDraw: null,
 
-        this.onColor = onColor || "#ffff00";
-        this.offColor = offColor || "#0000ff";
+    init: function(x, y, width, height, onColor, offColor, inputCallbacks, customDraw) {
+      this.AABBset(x, y, width, height);
 
-        this.inputCallbacks = inputCallbacks || null;
-        this.customDraw = customDraw;
+      this.onColor = onColor || "#ffff00";
+      this.offColor = offColor || "#0000ff";
 
-        joe.GUI.CaptureBox.addCaptureBox(this);
-      },
+      this.inputCallbacks = inputCallbacks || null;
+      this.customDraw = customDraw;
 
-      destroy: function() {
-        joe.GUI.CaptureBox.removeCaptureBox(this);
-      },
+      joe.GUI.CaptureBox.addCaptureBox(this);
+    },
 
-      isOn: function() {
-      	return this.bIsOn && this.widgetActive();
-      },
+    destroy: function() {
+      joe.GUI.CaptureBox.removeCaptureBox(this);
+    },
 
-      draw: function(context, worldX, worldY) {
-      	var color = this.bIsOn ? this.onColor : this.offColor;
+    isOn: function() {
+    	return this.bIsOn && this.widgetActive();
+    },
 
-      	if (this.widgetVisible()) {
-      		this.AABBoffset(worldX, worldY);
+    draw: function(context, worldX, worldY) {
+    	var color = this.bIsOn ? this.onColor : this.offColor;
 
-	      	context.save();
+    	if (this.widgetVisible()) {
+    		this.AABBoffset(worldX, worldY);
 
-	      	this.AABBdraw(context, color);
+      	context.save();
 
-	      	this.strokeStyle = color;
+      	this.AABBdraw(context, color);
 
-	      	if (this.customDraw) {
-	      		this.customDraw(context, worldX, worldY);
-	      	}
+      	this.strokeStyle = color;
 
-	      	context.restore();
+      	if (this.customDraw) {
+      		this.customDraw(context, worldX, worldY);
+      	}
 
-	      	this.AABBoffset(-worldX, -worldY);
-	     }
-      }
-  	}
-  ]
+      	context.restore();
+
+      	this.AABBoffset(-worldX, -worldY);
+     }
+    }
+	}
 );

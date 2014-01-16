@@ -17,100 +17,98 @@ joe.GUI.ClickBox = new joe.ClassEx(
   },
 
   // Instance Definition ////////////////////////////////////////////////////////
-  [
-    joe.MathEx.AABBmodule,
-    joe.GUI.WidgetModule,
-    {
-      onColor: "#ffff00",
-      offColor: "#0000ff",
-      bOn: false,
-      customDraw: null,
+  {
+    requires: joe.GUI.WidgetModule,
 
-      init: function(x, y, width, height, onColor, offColor, inputCallbacks, customDraw) {
-        this.AABBset(x, y, width, height);
+    onColor: "#ffff00",
+    offColor: "#0000ff",
+    bOn: false,
+    customDraw: null,
 
-        this.onColor = onColor || "#ffff00";
-        this.offColor = offColor || "#0000ff";
+    init: function(x, y, width, height, onColor, offColor, inputCallbacks, customDraw) {
+      this.AABBset(x, y, width, height);
 
-        this.inputCallbacks = inputCallbacks || null;
-        this.customDraw = customDraw;
+      this.onColor = onColor || "#ffff00";
+      this.offColor = offColor || "#0000ff";
 
-        joe.GUI.ClickBox.addClickBox(this);
-      },
+      this.inputCallbacks = inputCallbacks || null;
+      this.customDraw = customDraw;
 
-      destroy: function() {
-        joe.GUI.ClickBox.removeClickBox(this);
-      },
+      joe.GUI.ClickBox.addClickBox(this);
+    },
 
-      update: function(dt, gameTime, worldX, worldY) {
-        // Anything to do here?
-      },
+    destroy: function() {
+      joe.GUI.ClickBox.removeClickBox(this);
+    },
 
-      isOn: function() {
-        return this.bIsOn && this.widgetActive();
-      },
+    update: function(dt, gameTime, worldX, worldY) {
+      // Anything to do here?
+    },
 
-      press: function() {
-        this.bIsOn = true;
-      },
+    isOn: function() {
+      return this.bIsOn && this.widgetActive();
+    },
 
-      release: function() {
-        this.bIsOn = false;
-      },
+    press: function() {
+      this.bIsOn = true;
+    },
 
-      draw: function(context, worldX, worldY) {
-        var color = joe.GUI.INACTIVE_COLOR;
+    release: function() {
+      this.bIsOn = false;
+    },
 
-        if (context && this.widgetVisible()) {
-          this.AABBoffset(worldX, worldY);
+    draw: function(context, worldX, worldY) {
+      var color = joe.GUI.INACTIVE_COLOR;
 
-          context.save();
-          if (this.widgetActive()) {
-            color = this.bIsOn ? this.onColor : this.offColor;
-          }
+      if (context && this.widgetVisible()) {
+        this.AABBoffset(worldX, worldY);
 
-          context.strokeStyle = color;
-          context.fillStyle = color;
-
-          this.AABBdraw(context, color);
-
-          if (this.customDraw) {
-            this.customDraw.call(this, context, worldX, worldY);
-          }
-
-          context.restore();
-
-          this.AABBoffset(-worldX, -worldY);
-        }
-      },
-
-      mouseDown: function(x, y) {
-        var bConsumed = false;
-
-        if (this.widgetActive() && this.widgetVisible()) {
-          this.press();
-
-          this.widgetInputHandlers.mouseDown.call(this, x, y);
-
-          bConsumed = true;
+        context.save();
+        if (this.widgetActive()) {
+          color = this.bIsOn ? this.onColor : this.offColor;
         }
 
-        return bConsumed;
-      },
+        context.strokeStyle = color;
+        context.fillStyle = color;
 
-      mouseUp: function(x, y) {
-        var bConsumed = false;
+        this.AABBdraw(context, color);
 
-        if (this.widgetActive() && this.widgetVisible()) {
-          this.release();
-
-          this.widgetInputHandlers.mouseUp.call(this, x, y);
-
-          bConsumed = true;
+        if (this.customDraw) {
+          this.customDraw.call(this, context, worldX, worldY);
         }
 
-        return bConsumed;
+        context.restore();
+
+        this.AABBoffset(-worldX, -worldY);
       }
+    },
+
+    mouseDown: function(x, y) {
+      var bConsumed = false;
+
+      if (this.widgetActive() && this.widgetVisible()) {
+        this.press();
+
+        this.widgetInputHandlers.mouseDown.call(this, x, y);
+
+        bConsumed = true;
+      }
+
+      return bConsumed;
+    },
+
+    mouseUp: function(x, y) {
+      var bConsumed = false;
+
+      if (this.widgetActive() && this.widgetVisible()) {
+        this.release();
+
+        this.widgetInputHandlers.mouseUp.call(this, x, y);
+
+        bConsumed = true;
+      }
+
+      return bConsumed;
     }
-  ]
+  }
 );

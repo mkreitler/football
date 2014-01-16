@@ -24,6 +24,10 @@ joe.View = new joe.ClassEx({
     return this.camera;
   },
 
+  getBounds: function() {
+    return this.camera.getScreenRect();
+  },
+
   draw: function(gfx) {
     var iLayer = 0,
         camGfx = null;
@@ -58,6 +62,7 @@ joe.View = new joe.ClassEx({
       if (this.layers[iLayer].zOrder >= zOrder) {
         // Insert the layer at this point in the array;
         this.layers.splice(iLayer, 0, {layer:layer, zOrder:zOrder});
+        layer.setParent(this);
         bInserted = true;
         break;
       }
@@ -68,3 +73,12 @@ joe.View = new joe.ClassEx({
     }
   }
 });
+
+joe.View.LayerInterface = {
+  parent: null,
+
+  setParent: function(view) {
+    this.parent = view;
+  }
+};
+

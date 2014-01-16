@@ -31,12 +31,11 @@ joe.ClassEx = function(classModules, instanceModules) {
     this.init.apply(this, arguments);
   };
 
+  classModules = joe.ClassEx.include(classModules);
+  instanceModules = joe.ClassEx.include(instanceModules);
+
   joe.ClassEx.staticInit(classModules);
   joe.ClassEx.staticInit(instanceModules);
-
-  if (instanceModules && instanceModules.staticInit) {
-    instanceModules.staticInit();
-  }
 
   // Make the prototype object available to the class and
   // its instances outside of construction time.
@@ -56,6 +55,54 @@ joe.ClassEx = function(classModules, instanceModules) {
 
   return _class;
 };
+
+joe.ClassEx.include = function(modules) {
+  var modulesArray = null,
+      key = null,
+      module = null,
+      i = 0,
+      il = 0,
+      j = 0,
+      jl = 0,
+      includes = null,
+      included = [];
+
+  if (modules) {
+    if (!(modules instanceof Array)) {
+      modulesArray = [];
+      modulesArray.push(modules);
+    }
+    else {
+      modulesArray = modules;
+    }
+
+    for (i=0, il=modulesArray.length; i<il; ++i) {
+      // Are there any 'includes'?
+      includes = modulesArray[i]["requires"];
+      if (includes) {
+        // Yes. Add them to the list of modules.
+        if (includes instanceof Array) {
+          for (j=0, jl=includes.length; j<jl; ++j) {
+            if (included.indexOf(includes[j])) {
+              joe.assert(false, 'Circular dependency during include process!');
+            }
+            else {
+              included.push(includes[j]);
+              modulesArray.push(includes[j]);
+              il += 1;
+            }
+          }
+        }
+        else {
+          modulesArray.push(includes);
+          il += 1;
+        }
+      }
+    }
+  }
+
+  return modulesArray;
+},
 
 joe.ClassEx.staticInit = function(modules) {
   var modulesArray = modules && (modules instanceof Array) ? modules : null,
@@ -144,6 +191,12 @@ joe.ClassEx.cloneInstanceVars = function(src) {
       // the (!(name in empty) || empty[name] !== s) condition avoids copying properties in "source"
       // inherited from Object.prototype.	 For example, if dest has a custom toString() method,
       // don't overwrite it with the toString() method that source inherited from Object.prototype
+
+      // Skip the 'requires' keyword. It has already been processed.
+      if (name === 'requires') {
+        continue;
+      }
+
       s = source[name];
       if(!(name in dest) || (dest[name] !== s && (!(name in empty) || empty[name] !== s))){
         dest[name] = copyFunc ? copyFunc(s) : s;
