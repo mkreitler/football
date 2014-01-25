@@ -5,7 +5,7 @@ fb.ActionOverlay = new joe.ClassEx({
 },
 [
   // Instance Definition //////////////////////////////////////////////////////
-  joe.View.LayerInterface,
+  joe.Scene.LayerInterface,
 
   {
     actionCircle: {x:0, y:0, r:0, bActive: false},
@@ -31,9 +31,9 @@ fb.ActionOverlay = new joe.ClassEx({
       if (screenRect && this.actionCircle.bActive && this.font) {
         this.font.draw(gfx, "ACTION!", screenRect.w / 2, screenRect.h / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
 
-        joe.GUI.Ring.drawClipped(gfx, clipRect,
-                                 this.actionCircle.x - screenRect.x,
-                                 this.actionCircle.y - screenRect.y,
+        joe.GUI.Ring.drawClipped(gfx, null,
+                                 this.actionCircle.x - clipRect.x,
+                                 this.actionCircle.y - clipRect.y,
                                  this.actionCircle.r,
                                  6,
                                  "#FFFFFF",

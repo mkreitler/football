@@ -106,5 +106,3 @@ joe.GameState = new joe.GameStateClass()
 // Register with game systems.
 joe.UpdateLoop.addListener(joe.GameState);
 joe.Graphics.addListener(joe.GameState);
-joe.MouseInput.addListener(joe.GameState);
-joe.KeyInput.addListener(joe.GameState);

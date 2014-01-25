@@ -2,7 +2,7 @@
 // that determines which portion of a view gets rendered. The camera manages
 // an image into which the visible portion of the associated view is rendered.
 
-joe.Camera = new joe.ClassEx({
+joe.Scene.Camera = new joe.ClassEx({
   // Class Definition /////////////////////////////////////////////////////////
 },
 {
@@ -13,6 +13,7 @@ joe.Camera = new joe.ClassEx({
   srcRect: {x:0, y:0, w:0, h:0},  // Window defining region of layer source to render into view buffer.
   drawRect: {x:0, y:0, w:0, h:0}, // Window we will draw: overlap between viewRect and screen buffer.
   magnification: 1,
+  workPoint: {x:0, y:0},
 
   init: function(width, height) {
     this.viewRect.w = Math.max(1, width);
@@ -21,6 +22,13 @@ joe.Camera = new joe.ClassEx({
     this.clipToScreen();
 
     this.canvas = joe.Graphics.createOffscreenBuffer(this.viewRect.w, this.viewRect.h, false);
+  },
+
+  viewToWorldPos: function(localPos) {
+    this.workPoint.x = localPos.x - this.viewRect.x;
+    this.workPoint.y = localPos.y - this.viewRect.y;
+
+    return this.workPoint;
   },
 
   clipToScreen: function() {

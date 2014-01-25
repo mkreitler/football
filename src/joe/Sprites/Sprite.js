@@ -11,6 +11,7 @@ joe.Sprite = new joe.ClassEx({
     spriteSheet: null,
     align: {x:0, y:0},
     frameIndex: 0,
+    zOrder: 0,
     
     init: function(spriteSheet, frameIndex, alignX, alignY, x, y, vx, vy, ax, ay, blocksMask, blockedByMask) {
       joe.assert(spriteSheet);
@@ -30,6 +31,14 @@ joe.Sprite = new joe.ClassEx({
       // TODO: add collision callback?
     },
 
+    setZOrder: function(zOrder) {
+      this.zOrder = zOrder;
+    },
+
+    getZOrder: function() {
+      return this.zOrder;
+    },
+
     setAlignment: function(alignX, alignY) {
       joe.assert(this.spriteSheet);
       this.spriteSheet.setAlignment(alignX, alignY);
@@ -45,10 +54,27 @@ joe.Sprite = new joe.ClassEx({
       this.spriteSheet.draw(gfx, this.pos.x, this.pos.y, this.frameIndex);
     },
 
+    drawToWorld: function(gfx, worldX, worldY) {
+      joe.assert(this.spriteSheet);
+
+      this.spriteSheet.draw(gfx, this.pos.x - worldX, this.pos.y - worldY, this.frameIndex);
+    },
+
     update: function(dt, gameTime) {
       this.kinUpdate(dt);
-      this.updateBounds(this.pos.x, this.pos.y);
     },
+
+    setPos: function(x, y) {
+      this.pos.x = x;
+      this.pos.y = y;
+
+      this.updateBounds(x, y);
+    },
+
+    updateBounds: function(x, y) {
+      this.bounds.x = this.pos.x - this.align.x * this.bounds.w;
+      this.bounds.y = this.pos.y - this.align.y * this.bounds.h;
+    }
   }
 ]);
 

@@ -2,9 +2,20 @@ fb.StateTitleClass = new joe.ClassEx({
 },
 {
   font: null,
+  commands: null,
 
-  init: function(font) {
-    this.font = font;
+  init: function(fonts) {
+    this.font = fonts[0];
+
+    this.commands = {
+      mouseUp: function(x, y) {
+        fb.game.startPlayState();
+      },
+
+      touchDown: function(id, x, y) {
+        fb.game.startPlayState();
+      }
+    }
   },
 
   enter: function() {
@@ -26,13 +37,5 @@ fb.StateTitleClass = new joe.ClassEx({
   update: function(dt, gameTime) {
 
   },
-
-  mouseUp: function(x, y) {
-    fb.game.startPlayState();
-  },
-
-  touchDown: function(id, x, y) {
-    fb.game.startPlayState();
-  }
 });
 

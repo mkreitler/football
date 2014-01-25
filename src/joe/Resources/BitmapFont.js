@@ -94,7 +94,9 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 			}
 		},
 
-		draw: function( gfx, text, x, y, align ) {
+		draw: function( gfx, text, x, y, align, vAlign ) {
+			var horzAlign = (1 - (vAlign || 0.5)) * (this.height + this.lineSpacing);
+
 			if( typeof(text) != 'string' ) {
 				text = text.toString();
 			}
@@ -121,7 +123,7 @@ joe.Resources.BitmapFont = new joe.ClassEx(
 
 			for( var i = 0; i < text.length; i++ ) {
 				var c = text.charCodeAt(i);
-				x += this._drawChar( gfx, c - this.firstChar, x, y );
+				x += this._drawChar( gfx, c - this.firstChar, x, y - horzAlign);
 			}
 
 			if( this.alpha !== 1 ) {

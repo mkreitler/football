@@ -1,11 +1,27 @@
 fb.GameClass = new joe.ClassEx({
   // Class Definition /////////////////////////////////////////////////////////
   SPRITE_INDEX: { PLAYERS: 0,
-                  BALL: 1}
+                  BALL: 1 },
+
+  WINDOW: {MARGIN_VERTICAL: 10,
+           BOARD_HEIGHT: 150},
+
+  Z_ORDER: {
+    SPRITE_BALL: 10,
+    SPRITE_PLAYER: 50,
+
+    LAYER_GUI: 10,
+    LAYER_ACTION_OVERLAY: 50,
+    LAYER_PLAYFIELD: 100,
+
+    VIEW_GUI: 5,
+    VIEW_PLAYFIELD: 100,
+  },
 },
 {
   // Instance Definition //////////////////////////////////////////////////////
   sysFont: null,
+  boardFont: null,
   spriteSheets: null,
   field: null,
   titleState: null,
@@ -19,15 +35,24 @@ fb.GameClass = new joe.ClassEx({
                                                         fb.onResourceLoadFailed,
                                                         this);
 
+    this.boardFont = joe.Resources.loader.loadBitmapFont(["img/font_scoreboard_80_01.png",
+                                                          "img/font_scoreboard_80_02.png"],
+                                                          fb.onResourceLoaded,
+                                                          fb.onResourceLoadFailed,
+                                                          this);    
+
     this.spriteSheets = [];
     this.spriteSheets.push(joe.Resources.loader.loadImage("img/players.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this));
     this.spriteSheets.push(joe.Resources.loader.loadImage("img/ball.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this));
     this.field = joe.Resources.loader.loadImage("img/field.png", fb.onResourceLoaded, fb.onResourceLoadFailed, this);
+
+    joe.MouseInput.addListener(this);
+    joe.KeyInput.addListener(this);
   },
 
   start: function() {
-    this.titleState = new fb.StateTitleClass(this.sysFont);
-    this.playState = new fb.StatePlayClass(this.sysFont, this.spriteSheets, this.field);
+    this.titleState = new fb.StateTitleClass([this.sysFont]);
+    this.playState = new fb.StatePlayClass([this.sysFont, this.boardFont], this.spriteSheets, this.field);
 
     this.startTitleState();
 
@@ -43,11 +68,27 @@ fb.GameClass = new joe.ClassEx({
     joe.GameStateClass.setState(this.titleState);
   },
 
+  mouseUp: function(x, y) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.commands && curState.commands.mouseUp) {
+      curState.commands.mouseUp(x, y);
+    }
+  },
+
+  mouseDown: function(x, y) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.commands && curState.commands.mouseDown) {
+      curState.commands.mouseDown(x, y);
+    }
+  },
+
   touchUp: function(touchID, x, y) {
     var curState = joe.GameStateClass.getState();
 
-    if (curState && curState.touchUp) {
-      curState.touchUp(touchID, x, y);
+    if (curState && curState.commands && curState.commands.touchUp) {
+      curState.commands.touchUp(touchID, x, y);
     }
 
     return true;
@@ -56,8 +97,8 @@ fb.GameClass = new joe.ClassEx({
   touchDown: function(touchID, x, y) {
     var curState = joe.GameStateClass.getState();
 
-    if (curState && curState.touchDown) {
-      curState.touchDown(touchID, x, y);
+    if (curState && curState.commands && curState.commands.touchDown) {
+      curState.commands.touchDown(touchID, x, y);
     }
 
     return true;
@@ -66,8 +107,8 @@ fb.GameClass = new joe.ClassEx({
   keyPress: function(keyCode) {
     var curState = joe.GameStateClass.getState();
 
-    if (curState && curState.keyPress) {
-      curState.keyPress(keyCode);
+    if (curState && curState.commands && curState.commands.keyPress) {
+      curState.commands.keyPress(keyCode);
     }
 
     return true;
@@ -76,8 +117,8 @@ fb.GameClass = new joe.ClassEx({
   keyRelease: function(keyCode) {
     var curState = joe.GameStateClass.getState();
 
-    if (curState && curState.keyRelease) {
-      curState.keyRelease(keyCode);
+    if (curState && curState.commands && curState.commands.keyRelease) {
+      curState.commands.keyRelease(keyCode);
     }
 
     return true;

@@ -31,9 +31,12 @@ joe.kinematicObject = {
     this.pos.y = newY;
   },
 
-  setPos: function(x, y) {
-    this.pos.x = x;
-    this.pos.y = y;
+  getX: function() {
+    return this.pos.x;
+  },
+
+  getY: function() {
+    return this.pos.y;
   },
 
   getPosRef: function() {
@@ -56,9 +59,12 @@ joe.physicsCollider = {
     this.collisionMasks.blockedBy = blockedByMask;
   },
 
-  updateBounds: function(pos) {
-    this.bounds.x = pos.x;
-    this.bounds.y = pos.y;
+  getHeight: function() {
+    return this.bounds.h;
+  },
+
+  getWidth: function() {
+    return this.bounds.w;
   },
 
   getBoundsRef: function() {

@@ -1,110 +1,77 @@
 fb.StatePlayClass = new joe.ClassEx({
-  IO_TYPE: {NONE:0, LEFT:-1, RIGHT:1},
-  IO_TIMEOUT: 333,         // Reset inputs after 1/2 second of inactivity.
-  IO_HOLD_INTERVAL: 200,  // Keys held for more than 1/5 second register as "hold" events.
-  IO_STATE: {UP:0, DOWN:1, TAPPED:2, HELD:3},
-  CMD_TYPE: {NONE:0, LEFT:1, RIGHT:2, FORWARD:3, ACTION:4},
+  // Class Definition /////////////////////////////////////////////////////////
 },
 {
   font: null,
+  boardFont: null,
   spriteSheets: null,
   player: null,
   ball: null,
   fieldImg: null,
   playView: null,
-  playCam: null,
-  ioStates: {left:0, right:0},
-  commandTimers: {left:0, right:0},
-  lastUp: 0, // Corresponds to IO_TYPE.NONE
-  lastInput: 0, // Corresponds to IO_TYPE.NONE
-  lastCommand: 0, // Corresponds to CMD_TYPE.NONE
-  newInput: 0, // Corresponds to IO_TYPE.NONE
-  resetTimer: 0,
+  playViewport: null,
+  guiView: null,
+  guiViewport: null,
+  guiLayer: null,
   actionLength: 0,
   MIN_ACTION_LENGTH: 10,
   MAX_ACTION_LENGTH: 1024,
+  CAMERA_SCROLL_FACTOR: 0.33,
   actionSpeed: 500,   // Pixels per second
   actionTimer: 0,
   screenWidth: joe.Graphics.getWidth(),
+  screenHeight: joe.Graphics.getHeight(),
   actionLayer: null,
+  commands: null,
+  bActionLive: false,
+  playerLayer: null,
 
-  touchDown: function(id, x, y) {
-    if (x < joe.Graphics.getScreenWidth() / 2) {
-      this.keyPress(joe.KeyInput.KEYS.LEFT);
-    }
-    else {
-      this.keyPress(joe.KeyInput.KEYS.RIGHT);
-    }
-  },
+  init: function(fonts, spriteSheets, fieldImg) {
+    this.font = fonts[0];
+    this.boardFont = fonts[1];
 
-  touchUp: function(id, x, y) {
-    if (x < joe.Graphics.getScreenWidth() / 2) {
-      this.keyRelease(joe.KeyInput.KEYS.LEFT);
-    }
-    else {
-      this.keyRelease(joe.KeyInput.KEYS.RIGHT);
-    }
-  },
-
-  keyPress: function(keyCode) {
-    if (keyCode === joe.KeyInput.KEYS.LEFT && this.ioStates.left === fb.StatePlayClass.IO_STATE.UP) {
-      this.ioStates.left = fb.StatePlayClass.IO_STATE.DOWN;
-      this.commandTimers.left = 0;
-      this.newInput = fb.StatePlayClass.IO_TYPE.LEFT;
-    }
-    else if (keyCode === joe.KeyInput.KEYS.RIGHT && this.ioStates.right === fb.StatePlayClass.IO_STATE.UP) {
-      this.ioStates.right = fb.StatePlayClass.IO_STATE.DOWN;
-      this.commandTimers.right = 0;
-      this.newInput = fb.StatePlayClass.IO_TYPE.RIGHT;
-    }
-
-    return true;
-  },
-
-  keyRelease: function(keyCode) {
-    if (keyCode === joe.KeyInput.KEYS.LEFT && this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP) {
-      this.ioStates.left = this.ioStates.left === fb.StatePlayClass.IO_STATE.HELD ?
-                           fb.StatePlayClass.IO_STATE.UP : fb.StatePlayClass.IO_STATE.TAPPED;
-
-      if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
-        this.ioStates.left = fb.StatePlayClass.IO_STATE.UP;
-      }
-    }
-    else if (keyCode === joe.KeyInput.KEYS.RIGHT && this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-      this.ioStates.right = this.ioStates.right === fb.StatePlayClass.IO_STATE.HELD ?
-                            fb.StatePlayClass.IO_STATE.UP : fb.StatePlayClass.IO_STATE.TAPPED;
-
-    if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
-        this.ioStates.right = fb.StatePlayClass.IO_STATE.UP;
-      }
-    }
-    
-    return true;
-  },
-
-  init: function(font, spriteSheets, fieldImg) {
-    this.font = font;
     this.spriteSheets = spriteSheets;
     this.fieldImg = fieldImg;
 
+    this.commands = new fb.PlayCommands(this);
+
     this.player = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.PLAYERS], 2, 3),
-                                 1, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.9,
+                                 1, 0.5, 0.5, this.fieldImg.width * 0.5, this.fieldImg.height * 0.9,
                                  0, 0, 0, 0);
     this.ball = new joe.Sprite(new joe.SpriteSheet(spriteSheets[fb.GameClass.SPRITE_INDEX.BALL], 1, 4),
-                                2, 0.5, 0.5, joe.Graphics.getWidth() * 0.5, joe.Graphics.getHeight() * 0.5,
+                                2, 0.5, 0.5, this.fieldImg.width * 0.5, this.fieldImg.height * 0.5,
                                 0, 0, 0, 0);
 
-    // Create the playCam and playView.
-    this.playCam = new joe.Camera(this.fieldImg.width, this.fieldImg.height);
-    this.playCam.setSourcePosition(0, 0);
-    this.playCam.setDestPosition(joe.Graphics.getWidth() * 0.5 - this.fieldImg.width * 0.5, 10);
-    // this.playCam.setMagnification(2);
+    // Create the playViewport and playView.
+    this.playView = new joe.Scene.View(this.fieldImg.width, this.fieldImg.height,
+                                       this.fieldImg.width, joe.Graphics.getHeight() - 2 * fb.GameClass.WINDOW.MARGIN_VERTICAL - fb.GameClass.WINDOW.BOARD_HEIGHT);
+    this.playViewport = this.playView.getViewport();
+    this.playView.setWorldPos(joe.Graphics.getWidth() * 0.5 - this.fieldImg.width * 0.5, fb.GameClass.WINDOW.MARGIN_VERTICAL + fb.GameClass.WINDOW.BOARD_HEIGHT)
+    this.playView.setSourcePos(0, this.fieldImg.height - this.playViewport.getViewRect().h)
 
-    this.playView = new joe.View(this.fieldImg.width, this.fieldImg.height, this.playCam);
-    this.playView.addLayer(new joe.LayerBitmap(this.fieldImg), 100);
+    // Add a background image view to the play layer.
+    this.playView.addLayer(new joe.Scene.LayerBitmap(this.fieldImg), 100);
 
+    // Add a sprite layer and put the player and ball sprites in it.
+    this.playerLayer = new joe.Scene.SpriteLayer();
+    this.playerLayer.addSprite(this.player, fb.GameClass.Z_ORDER.SPRITE_PLAYER);
+    this.playerLayer.addSprite(this.ball, fb.GameClass.Z_ORDER.SPRITE_BALL);
+    this.playView.addLayer(this.playerLayer, fb.GameClass.Z_ORDER.LAYER_PLAYFIELD);
+
+    // Add the action overlay layer to the play view.
     this.actionLayer = new fb.ActionOverlay(this.font);
-    this.playView.addLayer(this.actionLayer, 50);
+    this.playView.addLayer(this.actionLayer, fb.GameClass.Z_ORDER.LAYER_ACTION_OVERLAY);
+
+    // Add the play view to the scene.
+    joe.Scene.addView(this.playView, fb.GameClass.Z_ORDER.VIEW_PLAYFIELD);
+
+    // Create the gui view and add it to the scene.
+    this.guiView = new joe.Scene.View(this.screenWidth, this.screenHeight,
+                                      this.screenWidth, this.screenHeight);
+    this.guiViewport = this.guiView.getViewport();
+
+    this.guiView.addLayer(new fb.GuiOverlay(this.boardFont, this.fieldImg.width), fb.GameClass.Z_ORDER.LAYER_GUI);
+    joe.Scene.addView(this.guiView, fb.GameClass.Z_ORDER.VIEW_GUI);
   },
 
   enter: function() {
@@ -118,109 +85,56 @@ fb.StatePlayClass = new joe.ClassEx({
 
     joe.Graphics.clearToColor("#000000");
 
-    this.playView.draw(gfx);
-
-    // TODO: move these into a Sprite Layer.
-    this.ball.draw(gfx);
-    this.player.draw(gfx);
+    joe.Scene.draw(gfx);
   },
 
   boundsCheck: function(newLength) {
   },
 
-  updateInputResets: function(dt) {
-    if (this.ioStates.left !== fb.StatePlayClass.IO_STATE.UP ||
-        this.ioStates.right !== fb.StatePlayClass.IO_STATE.UP) {
-      this.resetTimer = 0;
-    }
-
-    if (this.ioStates.left === fb.StatePlayClass.IO_STATE.UP &&
-        this.ioStates.right === fb.StatePlayClass.IO_STATE.UP &&
-        this.lastInput !== fb.StatePlayClass.IO_TYPE.NONE) {
-
-      this.resetTimer += dt;
-
-      if (this.resetTimer >= fb.StatePlayClass.IO_TIMEOUT) {
-        this.resetInputs();
-      }
-    }
-  },
-
   updateAction: function(dt) {
     // Update action timer.
     newActionLength = this.MIN_ACTION_LENGTH + this.actionSpeed * (this.actionTimer + dt * 0.001);
+    newActionLength = Math.min(newActionLength, this.fieldImg.height);
+    this.actionLength = newActionLength;
+    this.actionTimer += dt * 0.001;
+    this.actionLayer.updateActionCircle(true, this.player.pos.x, this.player.pos.y, this.actionLength);
+  },
 
-    if (newActionLength + this.player.pos.y > this.fieldImg.height ||
-        this.player.pos.y , newActionLength < 0) {
+  updateFieldPosition: function() {
+    var playerWorldPos = null,
+        playerPosRef = this.player.getPosRef(),
+        newCameraY = 0;
 
-      this.resetInputs();
-      this.resetAction();
-      this.actionLayer.updateActionCircle(false);
-    }
-    else {
-      this.actionLength = newActionLength;
-      this.actionTimer += dt * 0.001;
-      this.actionLayer.updateActionCircle(true, this.player.pos.x, this.player.pos.y, this.actionLength);
+    // Get the player's world position.
+    playerWorldPos = this.playViewport.viewToWorldPos(playerPosRef);
+
+    // Check against the top of the screen.
+    if (Math.abs(playerWorldPos.y - this.screenHeight * 0.5) < this.screenHeight * this.CAMERA_SCROLL_FACTOR) {
+      // Compute the desired camera position to focus on the player.
+      newCameraY = Math.round(playerPosRef.y - this.screenHeight * this.CAMERA_SCROLL_FACTOR);
+
+      // If player is too close to top, move the field position to catch
+      // up...
+      newCameraY = Math.max(0, newCameraY);
+      newCameraY = Math.min(newCameraY, this.fieldImg.height - this.playViewport.getViewRect().h);
+
+      // ...but prevent scrolling the field off the edge of the screen.
+      this.playViewport.setSourcePosition(0, newCameraY);
     }
   },
 
   update: function(dt, gameTime) {
-    var key = null,
-        newActionLength = 0;
+    // Update the command interpreter.
+    this.commands.update(dt);
 
-    if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
+    if (this.bActionLive) {
       this.updateAction(dt);
     }
     else {
       this.actionLayer.updateActionCircle(false);
     }
 
-    // Update the key states.
-    for (key in this.ioStates) {
-      if (this.ioStates[key] === fb.StatePlayClass.IO_STATE.DOWN) {
-        this.commandTimers[key] += dt;
-        if (this.commandTimers[key] >= fb.StatePlayClass.IO_HOLD_INTERVAL) {
-          this.ioStates[key] = fb.StatePlayClass.IO_STATE.HELD;
-        }
-      }
-    }
-
-    // Convert key states into commands.
-    if (this.ioStates.left === fb.StatePlayClass.IO_STATE.HELD &&
-        this.ioStates.right === fb.StatePlayClass.IO_STATE.HELD) {
-        if (this.lastCommand !== fb.StatePlayClass.CMD_TYPE.ACTION) {
-          this.startAction();
-        }
-        else {
-          this.continueAction();
-        }
-    }
-    else {
-      if (this.lastCommand === fb.StatePlayClass.CMD_TYPE.ACTION) {
-        if (this.ioStates.left === fb.StatePlayClass.IO_STATE.UP &&
-            this.ioStates.right === fb.StatePlayClass.IO_STATE.UP) {
-          this.triggerAction();
-          this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
-          this.lastInput = fb.StatePlayClass.IO_TYPE.NONE;
-        }
-      }
-      else if (this.ioStates.left === fb.StatePlayClass.IO_STATE.TAPPED) {
-        this.tapLeft();
-        this.ioStates.left = fb.StatePlayClass.IO_STATE.UP;
-      }
-      else if (this.ioStates.right === fb.StatePlayClass.IO_STATE.TAPPED) {
-        this.tapRight();
-        this.ioStates.right = fb.StatePlayClass.IO_STATE.UP;
-      }
-    }
-
-    this.updateInputResets(dt);
-  },
-
-  resetInputs: function() {
-    this.lastInput = fb.StatePlayClass.IO_TYPE.NONE;
-    this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
-    this.resetTimer = 0;
+    this.updateFieldPosition();
   },
 
   moveLeft: function() {
@@ -228,10 +142,7 @@ fb.StatePlayClass = new joe.ClassEx({
         pos = this.player.getPosRef(),
         newX = 0;
 
-    newX = pos.x - bounds.w * 0.5;
-    if (newX < 0) {
-      newX = joe.Graphics.getWidth() * 0.5;
-    }
+    newX = Math.max(0, pos.x - bounds.w * 0.5);
 
     this.player.setPos(newX, pos.y);
   },
@@ -239,13 +150,10 @@ fb.StatePlayClass = new joe.ClassEx({
   moveRight: function() {
     var bounds = this.player.getBoundsRef(),
         pos = this.player.getPosRef(),
-        maxWidth = joe.Graphics.getWidth(),
+        maxWidth = this.fieldImg.width,
         newX = 0;
 
-    newX = pos.x + bounds.w * 0.5;
-    if (newX >= maxWidth) {
-      newX = maxWidth * 0.5;
-    }
+    newX = Math.min(pos.x + bounds.w * 0.5, maxWidth);
 
     this.player.setPos(newX, pos.y);
   },
@@ -255,48 +163,18 @@ fb.StatePlayClass = new joe.ClassEx({
         pos = this.player.getPosRef(),
         newY = 0;
 
-    newY = pos.y - bounds.h * 0.5;
-    if (newY < 0) {
-      newY = joe.Graphics.getHeight() * 0.9;
-    }
+    newY = Math.max(this.player.getHeight() * 0.5, pos.y - bounds.h * 0.5);
+    // if (newY < 0) {
+    //   newY = joe.Graphics.getHeight() * 0.9;
+    // }
 
     this.player.setPos(pos.x, newY);
   },
 
-  tapLeft: function() {
-    // Web interface
-    if (this.ioStates.right === fb.StatePlayClass.IO_STATE.HELD) {
-      this.moveLeft();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
-    }
-    else {
-      this.moveForward();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
-    }
-
-    this.resetTimer = 0;
-    this.lastInput = fb.StatePlayClass.IO_TYPE.LEFT;
-  },
-
-  tapRight: function() {
-    // Web interface
-    if (this.ioStates.left === fb.StatePlayClass.IO_STATE.HELD) {
-      this.moveRight();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.LEFT;
-    }
-    else {
-      this.moveForward();
-      this.lastCommand = fb.StatePlayClass.CMD_TYPE.FORWARD;
-    }
-
-    this.resetTimer;
-    this.lastInput = fb.StatePlayClass.IO_TYPE.RIGHT;
-  },
-
   startAction: function() {
-    this.lastCommand = fb.StatePlayClass.CMD_TYPE.ACTION;
     this.actionLength = this.MIN_ACTION_LENGTH;
     this.actionTimer = 0;
+    this.bActionLive = true;
   },
 
   continueAction: function() {
@@ -309,9 +187,9 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   resetAction: function() {
-    this.lastCommand = fb.StatePlayClass.CMD_TYPE.NONE;
     this.actionLength = this.MIN_ACTION_LENGTH;
     this.actionTimer = 0; 
+    this.bActionLive = false;
   }
 });
 

@@ -16,7 +16,7 @@ joe.GUI.Ring = {
     this.bounds.w = 2 * radius;
     this.bounds.h = 2 * radius;
 
-    if (this.clip(clipRect)) {
+    if (!clipRect || this.clip(clipRect)) {
       gfx.strokeStyle = lineColor || this.DEFAULT_LINE_COLOR;
       gfx.lineWidth = thickness || this.DEFAULT_THICKNESS;
       gfx.globalAlpha = alpha;
@@ -131,7 +131,7 @@ joe.GUI.Arrow = {
 
     this.generatePoints(originX, originY, angle, length, headLength, headWidth);
 
-    if (this.clip(clipRect)) {
+    if (!clipRect || this.clip(clipRect)) {
       gfx.strokeStyle = lineColor || this.DEFAULT_LINE_COLOR;
       gfx.fillStyle = fillColor || this.DEFAULT_FILL_COLOR;
       gfx.lineWidth = lineWidth || this.DEFAULT_LINE_WIDTH;

@@ -1,30 +1,29 @@
 // The BitmapLayer renders a single bitmap into a scene.
 // This is useful for displaying a background, for example.
 
-joe.LayerBitmap = new joe.ClassEx({
+joe.Scene.LayerBitmap = new joe.ClassEx({
 },
-[
-  joe.View.LayerInterface,
-  
-  {
-    bitmap: null,
+{
+  requires: joe.Scene.LayerInterface,
 
-    init: function(bitmap) {
-      joe.assert(bitmap instanceof Image);
+  bitmap: null,
 
-      this.bitmap = bitmap;
-    },
+  init: function(bitmap) {
+    joe.assert(bitmap instanceof Image);
 
-    drawClipped: function(gfx, srcRect, scale) {
-      joe.assert(this.bitmap && this.bitmap instanceof Image);
+    this.bitmap = bitmap;
+  },
 
-      if (scale) {
-        gfx.scale(scale, scale);
-        gfx.drawImage(this.bitmap, srcRect.x, srcRect.y, srcRect.w, srcRect.h,
-                      0, 0, srcRect.w, srcRect.h);
-        gfx.scale(1, 1);
-      }
+  drawClipped: function(gfx, srcRect, scale) {
+    joe.assert(this.bitmap && this.bitmap instanceof Image);
+
+    if (scale) {
+      gfx.scale(scale, scale);
+      gfx.drawImage(this.bitmap, srcRect.x, srcRect.y, srcRect.w, srcRect.h,
+                    0, 0, srcRect.w, srcRect.h);
+      gfx.scale(1, 1);
     }
   }
-]);
+}
+);
 

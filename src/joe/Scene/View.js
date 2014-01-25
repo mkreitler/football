@@ -4,7 +4,7 @@
 // Layers are arranged by zOrder, with order 0 at the front of the screen, and
 // high-ordered layers moving further to the rear of the view.
 
-joe.View = new joe.ClassEx({
+joe.Scene.View = new joe.ClassEx({
   // Class Definition /////////////////////////////////////////////////////////
 },
 {
@@ -14,14 +14,29 @@ joe.View = new joe.ClassEx({
   camera: null,
   layers: [],
 
-  init: function(width, height, camera) {
+  init: function(width, height, viewportWidth, viewportHeight) {
     this.width = width;
     this.height = height;
-    this.camera = camera;
+    this.camera = new joe.Scene.Camera(viewportWidth, viewportHeight);
+
+    this.setWorldPos(0, 0);
+    this.setSourcePos(0, 0);
   },
 
-  getCamera: function() {
+  getViewport: function() {
     return this.camera;
+  },
+
+  setWorldPos: function(x, y) {
+    if (this.camera) {
+      this.camera.setDestPosition(x, y);
+    }
+  },
+
+  setSourcePos: function(x, y) {
+    if (this.camera) {
+      this.camera.setSourcePosition(x, y);
+    }
   },
 
   getBounds: function() {
@@ -38,10 +53,10 @@ joe.View = new joe.ClassEx({
     camGfx.save();
 
     // Render layers into the camera's buffer.
-    for (iLayer=0; iLayer<this.layers.length; ++iLayer) {
-      this.layers[this.layers.length - iLayer - 1].layer.drawClipped(this.camera.getGraphics(),
-                                                                     this.camera.getSourceRect(),
-                                                                     this.camera.getMagnification());
+    for (iLayer=this.layers.length-1; iLayer>=0; --iLayer) {
+      this.layers[iLayer].layer.drawClipped(this.camera.getGraphics(),
+                                            this.camera.getSourceRect(),
+                                            this.camera.getMagnification());
     }
 
     // Draw the camera's buffer into the primary buffer.
@@ -58,7 +73,7 @@ joe.View = new joe.ClassEx({
 
     joe.assert(layer);
 
-    for (iLayer=0; iLayer<this.layers.length; ++i) {
+    for (iLayer=0; iLayer<this.layers.length; ++iLayer) {
       if (this.layers[iLayer].zOrder >= zOrder) {
         // Insert the layer at this point in the array;
         this.layers.splice(iLayer, 0, {layer:layer, zOrder:zOrder});
@@ -70,15 +85,9 @@ joe.View = new joe.ClassEx({
 
     if (!bInserted) {
       this.layers.push({layer:layer, zOrder:zOrder});
+      layer.setParent(this);
     }
   }
 });
 
-joe.View.LayerInterface = {
-  parent: null,
-
-  setParent: function(view) {
-    this.parent = view;
-  }
-};
 

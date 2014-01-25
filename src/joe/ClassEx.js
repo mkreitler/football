@@ -48,7 +48,7 @@ joe.ClassEx = function(classModules, instanceModules) {
   _class.prototype.loadModule = joe.loadModule;
 
   // Copy instance-level functions into the class prototype.
-  joe.ClassEx.extendMethods(_class.static, instMods);
+  joe.ClassEx.extendMethods(_class.static, instanceModules);
 
   // Copy class data and methods into the new class.
   joe.ClassEx.extend(_class, classMods);
