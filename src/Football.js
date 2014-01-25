@@ -36,7 +36,8 @@ fb.GameClass = new joe.ClassEx({
                                                         this);
 
     this.boardFont = joe.Resources.loader.loadBitmapFont(["img/font_scoreboard_80_01.png",
-                                                          "img/font_scoreboard_80_02.png"],
+                                                          "img/font_scoreboard_80_02.png",
+                                                          "img/font_scoreboard_80_03.png"],
                                                           fb.onResourceLoaded,
                                                           fb.onResourceLoadFailed,
                                                           this);    
