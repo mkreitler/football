@@ -3,7 +3,7 @@
 
 joe.assert = function(condition, message) {
   if (!condition) {
-    if (navigator.isCocoonJS) {
+    if (joe.Utility.isMobile()) {
       console.log(message || "Assertion failed!");
     }
     else if (confirm(message + "\n\nHit 'yes' to debug.")) {

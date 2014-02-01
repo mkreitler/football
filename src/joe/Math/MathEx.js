@@ -28,7 +28,7 @@ joe.MathEx.cos = function(angle) {
 
   // Angle is now in the range [0, 2PI).
   
-  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.Math.TWO_PI;
+  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.MathEx.TWO_PI;
   highIndex = Math.floor(lowIndex);
 
   if (Math.abs(lowIndex - highIndex) > joe.MathEx.EPSILON ) {
@@ -54,7 +54,7 @@ joe.MathEx.sin = function(angle) {
 
   // Angle is now in the range [0, 2PI).
   
-  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.Math.TWO_PI;
+  lowIndex = joe.MathEx.TABLE_SIZE * angle / joe.MathEx.TWO_PI;
   highIndex = Math.floor(lowIndex);
 
   if (Math.abs(lowIndex - highIndex) > joe.MathEx.EPSILON ) {

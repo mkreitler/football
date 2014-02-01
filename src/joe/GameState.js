@@ -98,7 +98,25 @@ joe.GameStateClass = new joe.ClassEx({
     if (joe.GameStateClass.currentState && joe.GameStateClass.currentState.mouseDoubleClick) {
       joe.GameStateClass.currentState.mouseDoubleClick(x, y);
     }
-  }
+  },
+
+  touchDown : function(id, x, y) {
+    if (joe.GameStateClass.currentState && joe.GameStateClass.currentState.touchDown) {
+      joe.GameStateClass.currentState.touchDown(id, x, y);
+    }
+  },
+
+  touchUp : function(id, x, y) {
+    if (joe.GameStateClass.currentState && joe.GameStateClass.currentState.touchUp) {
+      joe.GameStateClass.currentState.touchUp(id, x, y);
+    }
+  },
+
+  touchMove : function(id, x, y) {
+    if (joe.GameStateClass.currentState && joe.GameStateClass.currentState.touchMove) {
+      joe.GameStateClass.currentState.touchMove(id, x, y);
+    }
+  },
 });
 
 joe.GameState = new joe.GameStateClass()

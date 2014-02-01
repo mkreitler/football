@@ -13,6 +13,7 @@ joe.Scene.View = new joe.ClassEx({
   height: 0,
   camera: null,
   layers: [],
+  workPos: {x:0, y:0},
 
   init: function(width, height, viewportWidth, viewportHeight) {
     this.width = width;
@@ -31,6 +32,13 @@ joe.Scene.View = new joe.ClassEx({
     if (this.camera) {
       this.camera.setDestPosition(x, y);
     }
+  },
+
+  getWorldPos: function(x, y) {
+    this.workPos.x = x;
+    this.workPos.y = y;
+    
+    return this.camera.viewToWorldPos(this.workPos);
   },
 
   setSourcePos: function(x, y) {

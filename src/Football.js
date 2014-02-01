@@ -17,6 +17,8 @@ fb.GameClass = new joe.ClassEx({
     VIEW_GUI: 5,
     VIEW_PLAYFIELD: 100,
   },
+
+  PLAYER_OVERLAY_ALPHA: 0.5,
 },
 {
   // Instance Definition //////////////////////////////////////////////////////
@@ -69,6 +71,14 @@ fb.GameClass = new joe.ClassEx({
     joe.GameStateClass.setState(this.titleState);
   },
 
+  mouseDrag: function(x, y) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.commands && curState.commands.mouseDrag) {
+      curState.commands.mouseDrag(x, y);
+    }
+  },
+
   mouseUp: function(x, y) {
     var curState = joe.GameStateClass.getState();
 
@@ -100,6 +110,16 @@ fb.GameClass = new joe.ClassEx({
 
     if (curState && curState.commands && curState.commands.touchDown) {
       curState.commands.touchDown(touchID, x, y);
+    }
+
+    return true;
+  },
+
+  touchMove: function(touchID, x, y) {
+    var curState = joe.GameStateClass.getState();
+
+    if (curState && curState.commands && curState.commands.touchMove) {
+      curState.commands.touchMove(touchID, x, y);
     }
 
     return true;

@@ -94,7 +94,7 @@ joe.GraphicsClass = new joe.ClassEx(null, [
         }
 
         if (!this.gameCanvas) {
-          this.gameCanvas = document.createElement(navigator.isCocoonJS ? 'screencanvas' : 'canvas');
+          this.gameCanvas = document.createElement(joe.Utility.isMobile() ? 'screencanvas' : 'canvas');
 //          this.gameCanvas = document.createElement("canvas");
         }
 

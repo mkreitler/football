@@ -7,6 +7,9 @@ fb.PlayCommands = new joe.ClassEx(
   IO_HOLD_INTERVAL: 200,    // Keys held for more than 1/5 second register as "hold" events.
   IO_STATE: {UP:0, DOWN:1, TAPPED:2, HELD:3},
   CMD_TYPE: {NONE:0, LEFT:1, RIGHT:2, FORWARD:3, ACTION:4},
+  MOUSE_DRAG_THRESHOLD: 10,
+  TOUCH_DRAG_THRESHOLD: 30,
+  DRAG_ACCEPT_INTERVAL: 67,
 },
 {
   ioStates: {left:0, right:0},
@@ -19,26 +22,102 @@ fb.PlayCommands = new joe.ClassEx(
   handler: null,
   ioHistory: [0, 0, 0], // [IO_TYPE.NONE, IO_TYPE.NONE, IO_TYPE.NONE],
   ioHistoryIndex: 0,
+  inputDownTime: 0,
+  bMouseDown: false,
+  mouseCommand: 0, // CMD_TYPE.NONE
+  mouseDownPos: {x:0 ,y:0},
+  bDragging: false,
+  bWantsDrag: false,
+  touchDragID: -1,
+  drawStartTime: 0,
 
   init: function(handler) {
     this.handler = handler;
   },
 
   touchDown: function(id, x, y) {
-    if (x < joe.Graphics.getScreenWidth() / 2) {
-      this.keyPress(joe.KeyInput.KEYS.LEFT);
-    }
-    else {
-      this.keyPress(joe.KeyInput.KEYS.RIGHT);
+    this.inputDownTime = joe.UpdateLoop.getGameTime();
+
+    if (!this.bDragging) {
+      this.bMouseDown = true;
     }
   },
 
   touchUp: function(id, x, y) {
-    if (x < joe.Graphics.getScreenWidth() / 2) {
-      this.keyRelease(joe.KeyInput.KEYS.LEFT);
+    var inputUpTime = joe.UpdateLoop.getGameTime();
+
+    if (id === this.touchDragID) {
+      if (this.bDragging && inputUpTime - this.dragStartTime > fb.PlayCommands.DRAG_ACCEPT_INTERVAL) {
+        this.handler.updatePlayerMoveDirection();
+      }
+
+      this.touchDragID = -1;
+      this.bDragging = false;
+      this.bWantsDrag = false;
     }
-    else {
-      this.keyRelease(joe.KeyInput.KEYS.RIGHT);
+
+    this.bMouseDown = false;
+
+    if (inputUpTime - this.inputDownTime < fb.PlayCommands.IO_HOLD_INTERVAL) {
+      // Move forward.
+      this.mouseCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
+    }
+    else if (this.lastCommand === fb.PlayCommands.CMD_TYPE.ACTION) {
+      this.mouseCommand = fb.PlayCommands.CMD_TYPE.ACTION;
+    }
+  },
+
+  touchMove: function(id, x, y) {
+    var inputTime = joe.UpdateLoop.getGameTime();
+
+    if (this.touchDragID < 0 || this.touchDragID === id) {
+      if (this.touchDragID < 0) {
+        this.mouseDownPos.x = x;
+        this.mouseDownPos.y = y;
+        this.bWantsDrag = true;
+        this.touchDragID = id;
+        this.dragStartTime = joe.UpdateLoop.getGameTime();
+      }
+      else if (this.bWantsDrag &&
+               Math.abs(x - this.mouseDownPos.x) + Math.abs(y - this.mouseDownPos.y) > fb.PlayCommands.TOUCH_DRAG_THRESHOLD) {
+        this.bWantsDrag = false;
+        this.bDragging = true;
+      }
+
+      if (this.bDragging && inputTime - this.dragStartTime > fb.PlayCommands.DRAG_ACCEPT_INTERVAL) {
+        this.bMouseDown = false; // Prevent actions.
+        this.handler.updateDragArrow(x - this.mouseDownPos.x, y - this.mouseDownPos.y);
+      }
+    }
+  },
+
+  mouseDown : function(x, y) {
+    this.inputDownTime = joe.UpdateLoop.getGameTime();
+    this.bMouseDown = true;
+    this.mouseDownPos.x = x;
+    this.mouseDownPos.y = y;
+  },
+
+  mouseUp : function(x, y) {
+    var inputUpTime = joe.UpdateLoop.getGameTime();
+
+    this.bMouseDown = false;
+    this.bDragging = false;
+
+    if (inputUpTime - this.inputDownTime < fb.PlayCommands.IO_HOLD_INTERVAL) {
+      // Move forward.
+      this.mouseCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
+    }
+    else if (this.lastCommand === fb.PlayCommands.CMD_TYPE.ACTION) {
+      this.mouseCommand = fb.PlayCommands.CMD_TYPE.ACTION;
+    }
+  },
+
+  mouseDrag : function(x, y) {
+    if (Math.abs(x - this.mouseDownPos.x) + Math.abs(y - this.mouseDownPos.y) > fb.PlayCommands.MOUSE_DRAG_THRESHOLD) {
+      // Update the player's move direction.
+      this.handler.setPlayerMoveDirection(x - this.mouseDownPos.x, y - this.mouseDownPos.y);
+      this.bDragging = true;
     }
   },
 
@@ -111,56 +190,23 @@ fb.PlayCommands = new joe.ClassEx(
   },
 
   tapLeft: function() {
-    var curIndex = this.ioHistoryIndex,
-        lastIndex = (this.ioHistoryIndex - 1) % this.ioHistory.length,
-        oldestIndex = (this.ioHistoryIndex - 2) % this.ioHistory.length;
-
-    if (lastIndex < 0) lastIndex += this.ioHistory.length;
-    if (oldestIndex < 0) oldestIndex += this.ioHistory.length;
-
-    this.ioHistory[this.ioHistoryIndex] = fb.PlayCommands.IO_TYPE.LEFT;
-    this.ioHistoryIndex = (this.ioHistoryIndex + 1) % this.ioHistory.length;
-
-    if (this.ioHistory[curIndex] === this.ioHistory[lastIndex] &&
-        this.ioHistory[curIndex] !== fb.PlayCommands.IO_TYPE.NONE) {
-      this.handler.moveLeft();
-      this.lastCommand = fb.PlayCommands.CMD_TYPE.LEFT;
-    }
-    else if (this.ioHistory[oldestIndex] === this.ioHistory[curIndex]) {
-      this.handler.moveForward();
-      this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
-    }
-
+    this.handler.moveForward();
+    this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
     this.resetTimer = 0;
     this.lastInput = fb.PlayCommands.IO_TYPE.LEFT;
   },
 
   tapRight: function() {
-    var curIndex = this.ioHistoryIndex,
-        lastIndex = (this.ioHistoryIndex - 1) % this.ioHistory.length,
-        oldestIndex = (this.ioHistoryIndex - 2) % this.ioHistory.length;
-
-    if (lastIndex < 0) lastIndex += this.ioHistory.length;
-    if (oldestIndex < 0) oldestIndex += this.ioHistory.length;
-
-    this.ioHistory[this.ioHistoryIndex] = fb.PlayCommands.IO_TYPE.RIGHT;
-    this.ioHistoryIndex = (this.ioHistoryIndex + 1) % this.ioHistory.length;
-
-    if (this.ioHistory[curIndex] === this.ioHistory[lastIndex] &&
-        this.ioHistory[curIndex] !== fb.PlayCommands.IO_TYPE.NONE) {
-      this.handler.moveRight();
-      this.lastCommand = fb.PlayCommands.CMD_TYPE.RIGHT;
-    }
-    else if (this.ioHistory[oldestIndex] === this.ioHistory[curIndex]) {
-      this.handler.moveForward();
-      this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
-    }
+    this.handler.moveForward();
+    this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
+    this.resetTimer = 0;
+    this.lastInput = fb.PlayCommands.IO_TYPE.LEFT;
 
     this.resetTimer = 0;
     this.lastInput = fb.PlayCommands.IO_TYPE.RIGHT;
   },
 
-  update: function(dt) {
+  update: function(dt, gameTime) {
     var key = null;
 
     // Update the key states.
@@ -173,8 +219,28 @@ fb.PlayCommands = new joe.ClassEx(
       }
     }
 
+    // Check for mouse hold.
+    if (this.mouseCommand && !this.bDragging) {
+      if (this.mouseCommand === fb.PlayCommands.CMD_TYPE.FORWARD) {
+        this.handler.moveForward();
+      }
+      else {
+        this.handler.triggerAction();
+      }
+
+      this.mouseCommand = fb.PlayCommands.CMD_TYPE.NONE;
+    }
+    else if (this.bMouseDown && !this.bDragging && gameTime - this.inputDownTime > fb.PlayCommands.IO_HOLD_INTERVAL) {
+      if (this.lastCommand !== fb.PlayCommands.CMD_TYPE.ACTION) {
+        this.handler.startAction();
+        this.lastCommand = fb.PlayCommands.CMD_TYPE.ACTION;
+      }
+      else {
+        this.handler.continueAction();
+      }
+    }
     // Convert key states into commands.
-    if (this.ioStates.left === fb.PlayCommands.IO_STATE.HELD &&
+    else if (this.ioStates.left === fb.PlayCommands.IO_STATE.HELD &&
         this.ioStates.right === fb.PlayCommands.IO_STATE.HELD) {
         if (this.lastCommand !== fb.PlayCommands.CMD_TYPE.ACTION) {
           this.handler.startAction();

@@ -57,35 +57,33 @@ joe.GUI.Arrow = {
         newX = 0,
         newY = 0;
 
-    this.points[0].x;
-    this.points[0].y - hw * 0.25;
+    this.points[0].x = 0;
+    this.points[0].y = -hw * 0.25;
 
-    this.points[1].x + l - h;
-    this.points[1].y - hw * 0.25;
+    this.points[1].x = l - hl;
+    this.points[1].y = -hw * 0.25;
 
-    this.points[2].x + l - h;
-    this.points[2].y - hw * 0.5;
+    this.points[2].x = l - hl;
+    this.points[2].y = -hw * 0.5;
 
-    this.points[3].x + l;
-    this.points[3].y;
+    this.points[3].x = l;
+    this.points[3].y = 0;
 
-    this.points[4].x + l - h;
-    this.points[4].y + hw * 0.5;
+    this.points[4].x = l - hl;
+    this.points[4].y = hw * 0.5;
 
-    this.points[5].x + l - h;
-    this.points[5].y + hw * 0.25;
+    this.points[5].x = l - hl;
+    this.points[5].y = hw * 0.25;
 
-    this.points[6].x;
-    this.points[6].y + hw * 0.25;
+    this.points[6].x = 0;
+    this.points[6].y = hw * 0.25;
 
     // Transform and construct bounds.
-    if (a) {
-      for (i=0; i<this.points.length; ++i) {
-        newX = this.points[i].x * cosA - this.points[i].y * sinA;
-        newY = this.points[i].x * sinA + this.points[i].y * cosA;
-        this.points[i].x = newX;
-        this.points[i].y = newY;
-      }
+    for (i=0; i<this.points.length; ++i) {
+      newX = this.points[i].x * cosA - this.points[i].y * sinA;
+      newY = this.points[i].x * sinA + this.points[i].y * cosA;
+      this.points[i].x = x + newX;
+      this.points[i].y = y + newY;
     }
 
     maxX = this.points[0].x;
@@ -119,33 +117,41 @@ joe.GUI.Arrow = {
     return !clipRect || joe.MathEx.clip(this.bounds, clipRect);
   },
 
-  drawClipped: function(gfx, clipRect, originX, originY, length, angle, lineColor, fillColor, lineWidth, minHeadSize) {
+  drawClipped: function(gfx, clipRect, originX, originY, length, angle, lineColor, fillColor, alpha, lineWidth, minHeadSize) {
     var headLength = Math.abs(minHeadSize || this.ARROW_MIN_HEAD_SIZE),
         headWidth = Math.abs(minHeadSize || this.ARROW_MIN_HEAD_SIZE),
         i = 0;
 
-    if (length < 2 * this.ARROW_MIN_HEAD_SIZE) {
-      headLength = length * 0.5;
-      headWidth = length * 0.5;
-    }
-
-    this.generatePoints(originX, originY, angle, length, headLength, headWidth);
-
-    if (!clipRect || this.clip(clipRect)) {
-      gfx.strokeStyle = lineColor || this.DEFAULT_LINE_COLOR;
-      gfx.fillStyle = fillColor || this.DEFAULT_FILL_COLOR;
-      gfx.lineWidth = lineWidth || this.DEFAULT_LINE_WIDTH;
-
-      gfx.beginPath();
-
-      gfx.moveTo(this.points[0].x, this.points[0].y);
-      for (i=1; i<this.points.length; ++i) {
-        gfx.lineTo(this.points[i].x, this.points[i].y);
+    if (alpha > joe.MathEx.EPSILON) {
+      if (length < 2 * this.ARROW_MIN_HEAD_SIZE) {
+        headLength = length * 0.5;
+        headWidth = length * 0.5;
       }
 
-      gfx.closePath();
-      gfx.fill();
-      gfx.stroke();
+      this.generatePoints(originX, originY, angle, length, headLength, headWidth);
+
+      if (!clipRect || this.clip(clipRect)) {
+        gfx.save();
+        gfx.strokeStyle = lineColor || this.DEFAULT_LINE_COLOR;
+        gfx.fillStyle = fillColor || this.DEFAULT_FILL_COLOR;
+        gfx.lineWidth = lineWidth || this.DEFAULT_LINE_WIDTH;
+
+        if (alpha < 1 - joe.MathEx.EPSILON) {
+          gfx.globalAlpha = alpha;
+        }
+
+        gfx.beginPath();
+
+        gfx.moveTo(this.points[0].x, this.points[0].y);
+        for (i=1; i<this.points.length; ++i) {
+          gfx.lineTo(this.points[i].x, this.points[i].y);
+        }
+
+        gfx.closePath();
+        gfx.fill();
+        gfx.stroke();
+        gfx.restore();
+      }
     }
   }
 };

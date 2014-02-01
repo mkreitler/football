@@ -31,10 +31,20 @@ joe.Multitouch = new joe.ClassEx([
     },
     
     touchMove: function(e) {
+      var i = 0;
+
       if (e) {
-        // TODO: do something here?
         e.preventDefault();
-        e.stopPropagation();        
+        e.stopPropagation();
+        
+        for (i=0; i<e.changedTouches.length; ++i) {
+          joe.Multitouch.getClientPos(e.changedTouches[i]);
+          // console.log("touchMove " + e.changedTouches[i].identifier + " " + joe.Multitouch.pointInfo.clientX + " " + joe.Multitouch.pointInfo.clientY);
+          joe.Multitouch.callListenersUntilConsumed("touchMove",
+                                                    e.changedTouches[i].identifier,
+                                                    joe.Multitouch.pointInfo.clientX,
+                                                    joe.Multitouch.pointInfo.clientY);    
+        }
       }
     },
     

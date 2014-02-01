@@ -36,3 +36,7 @@ joe.Utility.getPageWidth = function() {
 joe.Utility.getPageHeight = function() {
   return Math.max(document.documentElement["clientHeight"], document.body["scrollHeight"], document.documentElement["scrollHeight"], document.body["offsetHeight"], document.documentElement["offsetHeight"]) | window.innerHeight;
 };
+
+joe.Utility.isMobile = function() {
+  return navigator.isCocoonJS;
+};

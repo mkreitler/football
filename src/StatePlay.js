@@ -25,6 +25,8 @@ fb.StatePlayClass = new joe.ClassEx({
   commands: null,
   bActionLive: false,
   playerLayer: null,
+  dragArrow: {bUpdated:false, length:0, angle:-Math.PI * 0.5},
+  playerDirection: {length:0, angle:-Math.PI * 0.5},
 
   init: function(fonts, spriteSheets, fieldImg) {
     this.font = fonts[0];
@@ -123,9 +125,39 @@ fb.StatePlayClass = new joe.ClassEx({
     }
   },
 
+  setPlayerMoveDirection: function(dx, dy) {
+    this.playerDirection.bUpdated = true;
+    this.playerDirection.length = Math.sqrt(dx * dx + dy * dy);
+    this.playerDirection.angle = Math.atan2(dy, dx);
+
+    this.playerDirection.angle = Math.round(this.playerDirection.angle * 180 / Math.PI / 15) * 15;
+    this.playerDirection.angle = this.playerDirection.angle * Math.PI / 180;
+
+    this.dragArrow.length = this.playerDirection.length;
+    this.dragArrow.angle = this.playerDirection.angle;
+    this.dragArrow.bUpdated = true;
+  },
+
+  updatePlayerMoveDirection: function() {
+    this.playerDirection.length = this.dragArrow.length;
+    this.playerDirection.angle = this.dragArrow.angle;
+  },
+
+  updateDragArrow: function(dx, dy) {
+    this.dragArrow.length = Math.sqrt(dx * dx + dy * dy);
+    this.dragArrow.angle = Math.atan2(dy, dx);
+    this.dragArrow.angle = Math.round(this.dragArrow.angle * 180 / Math.PI / 15) * 15;
+    this.dragArrow.angle = this.dragArrow.angle * Math.PI / 180;
+    this.dragArrow.bUpdated = true;
+  },
+
   update: function(dt, gameTime) {
+    var playerPos = null;
+
     // Update the command interpreter.
-    this.commands.update(dt);
+    this.commands.update(dt, gameTime);
+
+    this.updateFieldPosition();
 
     if (this.bActionLive) {
       this.updateAction(dt);
@@ -134,7 +166,12 @@ fb.StatePlayClass = new joe.ClassEx({
       this.actionLayer.updateActionCircle(false);
     }
 
-    this.updateFieldPosition();
+    if (this.dragArrow.bUpdated) {
+      playerPos = this.player.getPosRef();
+      playerPos = this.playView.getWorldPos(playerPos.x, playerPos.y);
+      this.actionLayer.updateDirectionArrow(playerPos.x, playerPos.y, this.dragArrow.length, this.dragArrow.angle, fb.GameClass.PLAYER_OVERLAY_ALPHA);
+      this.dragArrow.bUpdated = false;
+    }
   },
 
   moveLeft: function() {
@@ -161,14 +198,21 @@ fb.StatePlayClass = new joe.ClassEx({
   moveForward: function() {
     var bounds = this.player.getBoundsRef(),
         pos = this.player.getPosRef(),
-        newY = 0;
+        newX = pos.x,
+        newY = pos.y,
+        playerWidth = this.player.getWidth(),
+        playerHeight = this.player.getHeight();
 
-    newY = Math.max(this.player.getHeight() * 0.5, pos.y - bounds.h * 0.5);
+    newX = Math.max(playerWidth * 0.5, pos.x + bounds.h * 0.5 * joe.MathEx.cos(this.playerDirection.angle));
+    newX = Math.min(this.fieldImg.width - playerWidth * 0.5, newX);
+
+    newY = Math.max(playerHeight * 0.5, pos.y + bounds.h * 0.5 * joe.MathEx.sin(this.playerDirection.angle));
+    newY = Math.min(this.fieldImg.height - playerHeight * 0.5, newY);
     // if (newY < 0) {
     //   newY = joe.Graphics.getHeight() * 0.9;
     // }
 
-    this.player.setPos(pos.x, newY);
+    this.player.setPos(newX, newY);
   },
 
   startAction: function() {
