@@ -1,0 +1,3 @@
+[submodule "joe"]
+	path = joe
+	url = c:/xampp/htdocs/javascript/joe/.git
