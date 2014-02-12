@@ -26,7 +26,7 @@ fb.StatePlayClass = new joe.ClassEx({
   bActionLive: false,
   playerLayer: null,
   dragArrow: {bUpdated:false, length:0, angle:-Math.PI * 0.5},
-  playerDirection: {length:0, angle:-Math.PI * 0.5},
+  playerDirection: {length:0, angle:-Math.PI * 0.5, angles:[0, 0, 0], lengths:[0, 0, 0], nAngles: 5, bInitAngles: true, index: -1},
 
   init: function(fonts, spriteSheets, fieldImg) {
     this.font = fonts[0];
@@ -126,12 +126,43 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   setPlayerMoveDirection: function(dx, dy) {
-    this.playerDirection.bUpdated = true;
-    this.playerDirection.length = Math.sqrt(dx * dx + dy * dy);
-    this.playerDirection.angle = Math.atan2(dy, dx);
+    var i = 0,
+        angle = 0,
+        length = 0;
 
-    this.playerDirection.angle = Math.round(this.playerDirection.angle * 180 / Math.PI / 15) * 15;
-    this.playerDirection.angle = this.playerDirection.angle * Math.PI / 180;
+    length = Math.sqrt(dx * dx + dy * dy);
+    angle = Math.atan2(dy, dx);
+    angle = Math.round(angle * 180 / Math.PI / fb.GameClass.ANGLE_RESOLUTION) * fb.GameClass.ANGLE_RESOLUTION;
+    angle = angle * Math.PI / 180;
+
+    if (this.playerDirection.bInitAngles) {
+      this.playerDirection.bInitAngles = false;
+
+      for (i=0; i<this.playerDirection.angles.length; ++i) {
+        this.playerDirection.angles[i] = angle;
+        this.playerDirection.lengths[i] = length;
+        this.playerDirection.nextIndex = 1;
+      }
+    }
+    else {
+      this.playerDirection.angles[this.playerDirection.nextIndex] = angle;
+      this.playerDirection.lengths[this.playerDirection.nextIndex] = length;
+      this.nextIndex = (this.nextIndex + 1) % this.playerDirection.angles.length;
+
+      angle = 0;
+      length = 0;
+      for (i=0; i<this.playerDirection.angles.length; ++i) {
+        angle += this.playerDirection.angles[i];
+        length += this.playerDirection.lengths[i];
+      }
+
+      angle /= this.playerDirection.angles.length;
+      length /= this.playerDirection.lengths.length;
+    }
+
+    this.playerDirection.bUpdated = true;
+    this.playerDirection.angle = angle;
+    this.playerDirection.length = length;
 
     this.dragArrow.length = this.playerDirection.length;
     this.dragArrow.angle = this.playerDirection.angle;
@@ -139,8 +170,10 @@ fb.StatePlayClass = new joe.ClassEx({
   },
 
   updatePlayerMoveDirection: function() {
-    this.playerDirection.length = this.dragArrow.length;
+    this.playerDirection.length = 1;
     this.playerDirection.angle = this.dragArrow.angle;
+
+    this.playerDirection.bInitAngles = true;
   },
 
   updateDragArrow: function(dx, dy) {

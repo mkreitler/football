@@ -19,6 +19,7 @@ fb.GameClass = new joe.ClassEx({
   },
 
   PLAYER_OVERLAY_ALPHA: 0.5,
+  ANGLE_RESOLUTION: 15,
 },
 {
   // Instance Definition //////////////////////////////////////////////////////

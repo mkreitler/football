@@ -101,6 +101,10 @@ fb.PlayCommands = new joe.ClassEx(
   mouseUp : function(x, y) {
     var inputUpTime = joe.UpdateLoop.getGameTime();
 
+    if (this.bDragging) {
+      this.handler.updatePlayerMoveDirection();
+    }
+
     this.bMouseDown = false;
     this.bDragging = false;
 
