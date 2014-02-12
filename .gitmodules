@@ -1,0 +1,3 @@
+[submodule "src/joe"]
+	path = src/joe
+	url = c:/xampp/htdocs/javascript/joe
