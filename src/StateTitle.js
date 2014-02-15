@@ -1,41 +1,87 @@
 fb.StateTitleClass = new joe.ClassEx({
+  TITLE_PADDING: 50,
 },
 {
+  requires: joe.GameState.inputHandlers,
+
   font: null,
   commands: null,
+  guiManager: null,
 
   init: function(fonts) {
+    var self = this;
+
     this.font = fonts[0];
+    this.guiManager = new joe.GuiClass();
 
     this.commands = {
       mouseUp: function(x, y) {
-        fb.game.startPlayState();
+        return false;
       },
 
       touchDown: function(id, x, y) {
-        fb.game.startPlayState();
+        return false;
       }
     }
+
+    this.guiManager.addWidget(new joe.GUI.TextMenu(
+      joe.Graphics.getWidth() * 0.5,
+      joe.Graphics.getHeight() * 0.5,
+      this.font,
+      [
+        {text: fb.Strings.TITLE,
+         inputHandlers: null,
+         anchorX: 0.5,
+         padding: fb.StateTitleClass.TITLE_PADDING,
+        },
+        {text: fb.Strings.TRAINING,
+         inputHandlers: {mouseUp: function(x, y) {self.message("startTraining"); return true;},
+                         touchDown: function(x, y) {self.message("startTraining"); return true;}
+                        },
+         anchorX: 0.5
+        },
+        {text: fb.Strings.EXHIBITION_GAME,
+         inputHandlers: {mouseUp: function(x, y) {self.message("startExhibitionGame"); return true;},
+                         touchDown: function(x, y) {self.message("startExhibitionGame"); return true;}
+                        },
+         anchorX: 0.5
+        },
+        {text: fb.Strings.REGULAR_SEASON_GAME,
+         inputHandlers: {mouseUp: function(x, y) {self.message("startRegularSeasonGame"); return true;},
+                         touchDown: function(x, y) {self.message("startRegularSeasonGame"); return true;}
+                        },
+         anchorX: 0.5
+        }
+      ],
+      0.5,
+      0.5,
+      0.1,
+      null
+    ));
   },
 
   enter: function() {
-
+    joe.MouseInput.addListener(this.guiManager);
+    joe.Multitouch.addListener(this.guiManager);
   },
 
   exit: function() {
-
+    joe.MouseInput.removeListener(this.guiManager);
+    joe.Multitouch.removeListener(this.guiManager);
   },
 
   draw: function(gfx) {
     joe.Graphics.clearToColor("#000000");
 
-    if (this.font) {
-      this.font.draw(gfx, "Football!", joe.Graphics.getWidth() / 2, joe.Graphics.getHeight() / 2, joe.Resources.BitmapFont.ALIGN.CENTER);
+    if (this.guiManager) {
+      this.guiManager.draw(gfx);
     }
   },
 
   update: function(dt, gameTime) {
-
+    if (this.guiManager) {
+      this.guiManager.update(dt, gameTime);
+    }
   },
 });
 

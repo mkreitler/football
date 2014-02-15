@@ -23,6 +23,8 @@ fb.GameClass = new joe.ClassEx({
 },
 {
   // Instance Definition //////////////////////////////////////////////////////
+  requires: joe.GameState.stateMachine,
+
   sysFont: null,
   boardFont: null,
   spriteSheets: null,
@@ -52,6 +54,10 @@ fb.GameClass = new joe.ClassEx({
 
     joe.MouseInput.addListener(this);
     joe.KeyInput.addListener(this);
+
+    this.onMessage("startTraining", this, function() {this.startPlayState(); });
+    this.onMessage("startExhibitionGame", this, function() {this.startPlayState(); });
+    this.onMessage("startRegularSeasonGame", this, function() {this.startPlayState(); });
   },
 
   start: function() {
@@ -65,85 +71,99 @@ fb.GameClass = new joe.ClassEx({
   },
 
   startPlayState: function() {
-    joe.GameStateClass.setState(this.playState);
+    this.setState(this.playState);
   },
 
   startTitleState: function() {
-    joe.GameStateClass.setState(this.titleState);
+    this.setState(this.titleState);
   },
 
   mouseDrag: function(x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.mouseDrag) {
-      curState.commands.mouseDrag(x, y);
+      bConsumed = curState.commands.mouseDrag(x, y);
     }
+
+    return bConsumed;
   },
 
   mouseUp: function(x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.mouseUp) {
-      curState.commands.mouseUp(x, y);
+      bConsumed = curState.commands.mouseUp(x, y);
     }
+
+    return bConsumed;
   },
 
   mouseDown: function(x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.mouseDown) {
-      curState.commands.mouseDown(x, y);
+      bConsumed = curState.commands.mouseDown(x, y);
     }
+
+    return bConsumed;
   },
 
   touchUp: function(touchID, x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.touchUp) {
-      curState.commands.touchUp(touchID, x, y);
+      bConsumed = curState.commands.touchUp(touchID, x, y);
     }
 
-    return true;
+    return bConsumed;
   },
 
   touchDown: function(touchID, x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.touchDown) {
-      curState.commands.touchDown(touchID, x, y);
+      bConsumed = curState.commands.touchDown(touchID, x, y);
     }
 
-    return true;
+    return bConsumed;
   },
 
   touchMove: function(touchID, x, y) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.touchMove) {
-      curState.commands.touchMove(touchID, x, y);
+      bConsumed = curState.commands.touchMove(touchID, x, y);
     }
 
-    return true;
+    return bConsumed;
   },
 
   keyPress: function(keyCode) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.keyPress) {
-      curState.commands.keyPress(keyCode);
+      bConsumed = curState.commands.keyPress(keyCode);
     }
 
-    return true;
+    return bConsumed;
   },
 
   keyRelease: function(keyCode) {
-    var curState = joe.GameStateClass.getState();
+    var curState = this.getState(),
+        bConsumed = false;
 
     if (curState && curState.commands && curState.commands.keyRelease) {
-      curState.commands.keyRelease(keyCode);
+      bConsumed = curState.commands.keyRelease(keyCode);
     }
 
-    return true;
+    return bConsumed;
   },
 });
 

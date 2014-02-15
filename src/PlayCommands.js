@@ -8,7 +8,7 @@ fb.PlayCommands = new joe.ClassEx(
   IO_STATE: {UP:0, DOWN:1, TAPPED:2, HELD:3},
   CMD_TYPE: {NONE:0, LEFT:1, RIGHT:2, FORWARD:3, ACTION:4},
   MOUSE_DRAG_THRESHOLD: 10,
-  TOUCH_DRAG_THRESHOLD: 30,
+  TOUCH_DRAG_THRESHOLD: 50,
   DRAG_ACCEPT_INTERVAL: 67,
 },
 {
@@ -19,20 +19,19 @@ fb.PlayCommands = new joe.ClassEx(
   lastCommand: 0, // Corresponds to CMD_TYPE.NONE
   newInput: 0, // Corresponds to IO_TYPE.NONE
   resetTimer: 0,
-  handler: null,
   ioHistory: [0, 0, 0], // [IO_TYPE.NONE, IO_TYPE.NONE, IO_TYPE.NONE],
   ioHistoryIndex: 0,
   inputDownTime: 0,
   bMouseDown: false,
   mouseCommand: 0, // CMD_TYPE.NONE
   mouseDownPos: {x:0 ,y:0},
+  mouseDragPos: {x:0, y:0},
   bDragging: false,
   bWantsDrag: false,
   touchDragID: -1,
   drawStartTime: 0,
 
-  init: function(handler) {
-    this.handler = handler;
+  init: function() {
   },
 
   touchDown: function(id, x, y) {
@@ -47,10 +46,6 @@ fb.PlayCommands = new joe.ClassEx(
     var inputUpTime = joe.UpdateLoop.getGameTime();
 
     if (id === this.touchDragID) {
-      if (this.bDragging && inputUpTime - this.dragStartTime > fb.PlayCommands.DRAG_ACCEPT_INTERVAL) {
-        this.handler.updatePlayerMoveDirection();
-      }
-
       this.touchDragID = -1;
       this.bDragging = false;
       this.bWantsDrag = false;
@@ -77,18 +72,43 @@ fb.PlayCommands = new joe.ClassEx(
         this.bWantsDrag = true;
         this.touchDragID = id;
         this.dragStartTime = joe.UpdateLoop.getGameTime();
+        this.dragDx = 0;
+        this.dragDy = 0;
       }
       else if (this.bWantsDrag &&
                Math.abs(x - this.mouseDownPos.x) + Math.abs(y - this.mouseDownPos.y) > fb.PlayCommands.TOUCH_DRAG_THRESHOLD) {
         this.bWantsDrag = false;
+
+        // Update the player's move direction.
         this.bDragging = true;
+        this.message("startPlayerDrag", x - this.mouseDownPos.x, y - this.mouseDownPos.y);
       }
 
       if (this.bDragging && inputTime - this.dragStartTime > fb.PlayCommands.DRAG_ACCEPT_INTERVAL) {
         this.bMouseDown = false; // Prevent actions.
-        this.handler.updateDragArrow(x - this.mouseDownPos.x, y - this.mouseDownPos.y);
+      }
+
+      if (this.bDragging) {
+        this.mouseDragPos.x = x;
+        this.mouseDragPos.y = y;
       }
     }
+  },
+
+  getMouseDragDX: function() {
+    return this.mouseDragPos.x - this.mouseDownPos.x;
+  },
+
+  getMouseDragDY: function() {
+    return this.mouseDragPos.y - this.mouseDownPos.y;
+  },
+
+  isPlayerDragging: function() {
+    return this.bDragging;
+  },
+
+  dragIsValid: function() {
+    return joe.Utility.isMobile() ? this.bDragging && !this.bMouseDown : this.bDragging;
   },
 
   mouseDown : function(x, y) {
@@ -100,10 +120,6 @@ fb.PlayCommands = new joe.ClassEx(
 
   mouseUp : function(x, y) {
     var inputUpTime = joe.UpdateLoop.getGameTime();
-
-    if (this.bDragging) {
-      this.handler.updatePlayerMoveDirection();
-    }
 
     this.bMouseDown = false;
     this.bDragging = false;
@@ -118,10 +134,15 @@ fb.PlayCommands = new joe.ClassEx(
   },
 
   mouseDrag : function(x, y) {
-    if (Math.abs(x - this.mouseDownPos.x) + Math.abs(y - this.mouseDownPos.y) > fb.PlayCommands.MOUSE_DRAG_THRESHOLD) {
-      // Update the player's move direction.
-      this.handler.setPlayerMoveDirection(x - this.mouseDownPos.x, y - this.mouseDownPos.y);
-      this.bDragging = true;
+    if (this.bDragging || Math.abs(x - this.mouseDownPos.x) + Math.abs(y - this.mouseDownPos.y) > fb.PlayCommands.MOUSE_DRAG_THRESHOLD) {
+      this.mouseDragPos.x = x;
+      this.mouseDragPos.y = y;
+
+      if (!this.bDragging) {
+        // Update the player's move direction.
+        this.message("startPlayerDrag", x - this.mouseDownPos.x, y - this.mouseDownPos.y);
+        this.bDragging = true;
+      }
     }
   },
 
@@ -194,14 +215,14 @@ fb.PlayCommands = new joe.ClassEx(
   },
 
   tapLeft: function() {
-    this.handler.moveForward();
+    this.message("moveForward");
     this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
     this.resetTimer = 0;
     this.lastInput = fb.PlayCommands.IO_TYPE.LEFT;
   },
 
   tapRight: function() {
-    this.handler.moveForward();
+    this.message("moveForward");
     this.lastCommand = fb.PlayCommands.CMD_TYPE.FORWARD;
     this.resetTimer = 0;
     this.lastInput = fb.PlayCommands.IO_TYPE.LEFT;
@@ -226,39 +247,39 @@ fb.PlayCommands = new joe.ClassEx(
     // Check for mouse hold.
     if (this.mouseCommand && !this.bDragging) {
       if (this.mouseCommand === fb.PlayCommands.CMD_TYPE.FORWARD) {
-        this.handler.moveForward();
+        this.message("moveForward");
       }
       else {
-        this.handler.triggerAction();
+        this.message("triggerAction");
       }
 
       this.mouseCommand = fb.PlayCommands.CMD_TYPE.NONE;
     }
     else if (this.bMouseDown && !this.bDragging && gameTime - this.inputDownTime > fb.PlayCommands.IO_HOLD_INTERVAL) {
       if (this.lastCommand !== fb.PlayCommands.CMD_TYPE.ACTION) {
-        this.handler.startAction();
+        this.message("startAction");
         this.lastCommand = fb.PlayCommands.CMD_TYPE.ACTION;
       }
       else {
-        this.handler.continueAction();
+        this.message("continueAction");
       }
     }
     // Convert key states into commands.
     else if (this.ioStates.left === fb.PlayCommands.IO_STATE.HELD &&
         this.ioStates.right === fb.PlayCommands.IO_STATE.HELD) {
         if (this.lastCommand !== fb.PlayCommands.CMD_TYPE.ACTION) {
-          this.handler.startAction();
+          this.message("startAction");
           this.lastCommand = fb.PlayCommands.CMD_TYPE.ACTION;
         }
         else {
-          this.handler.continueAction();
+          this.message("continueAction");
         }
     }
     else {
       if (this.lastCommand === fb.PlayCommands.CMD_TYPE.ACTION) {
         if (this.ioStates.left === fb.PlayCommands.IO_STATE.UP &&
             this.ioStates.right === fb.PlayCommands.IO_STATE.UP) {
-          this.handler.triggerAction();
+          this.message("triggerAction");
           this.resetInputs();
         }
       }
