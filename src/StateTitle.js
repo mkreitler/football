@@ -35,8 +35,8 @@ fb.StateTitleClass = new joe.ClassEx({
          padding: fb.StateTitleClass.TITLE_PADDING,
         },
         {text: fb.Strings.TRAINING,
-         inputHandlers: {mouseUp: function(x, y) {self.message("startTraining"); return true;},
-                         touchDown: function(x, y) {self.message("startTraining"); return true;}
+         inputHandlers: {mouseUp: function(x, y) {self.message("showTrainingMenu"); return true;},
+                         touchDown: function(x, y) {self.message("showTrainingMenu"); return true;}
                         },
          anchorX: 0.5
         },

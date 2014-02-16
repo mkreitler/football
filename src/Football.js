@@ -31,6 +31,7 @@ fb.GameClass = new joe.ClassEx({
   field: null,
   titleState: null,
   playState: null,
+  trainingMenuState: null,
 
   init: function() {
     this.sysFont = joe.Resources.loader.loadBitmapFont(["img/font_college_48_01.png",
@@ -58,11 +59,13 @@ fb.GameClass = new joe.ClassEx({
     this.onMessage("startTraining", this, function() {this.startPlayState(); });
     this.onMessage("startExhibitionGame", this, function() {this.startPlayState(); });
     this.onMessage("startRegularSeasonGame", this, function() {this.startPlayState(); });
+    this.onMessage("showTrainingMenu", this, function() {this.showTrainingMenu(); });
   },
 
   start: function() {
     this.titleState = new fb.StateTitleClass([this.sysFont]);
     this.playState = new fb.StatePlayClass([this.sysFont, this.boardFont], this.spriteSheets, this.field);
+    this.trainingMenuState = new fb.StateTrainingMenu([this.sysFont]);
 
     this.startTitleState();
 
@@ -76,6 +79,10 @@ fb.GameClass = new joe.ClassEx({
 
   startTitleState: function() {
     this.setState(this.titleState);
+  },
+
+  showTrainingMenu: function() {
+    this.setState(this.trainingMenuState);
   },
 
   mouseDrag: function(x, y) {
